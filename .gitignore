@@ -57,3 +57,6 @@ dkms.conf
 
 # mlx folder
 mlx/
+
+#vscode confg
+**/.vscode/

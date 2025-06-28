@@ -1,8 +1,27 @@
 #include "../inc/rt.h"
 #include <stdio.h>
+#include <stdbool.h>
+
+bool	hit_sphere(point3 center, double radius, ray r)
+{
+	vec3	oc;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+
+	oc = vec3_sub(ray_origin(r), center);
+	a = vec3_dot(ray_direction(r), ray_direction(r));
+	b = 2.0 * vec3_dot(oc, ray_direction(r));
+	c = vec3_dot(oc, oc) - radius * radius;
+	discriminant = b * b - 4 * a * c;
+	return (discriminant >= 0);
+}
 
 color	ray_color(ray r)
 {
+	point3	sphere_center;
+	double	sphere_radius;
 	vec3	unit_direction;
 	double	a;
 	color	white;
@@ -10,11 +29,16 @@ color	ray_color(ray r)
 	color	c1;
 	color	c2;
 
+	sphere_center = vec3_create(0, 0, -1);
+	sphere_radius = 0.5;
+	if (hit_sphere(sphere_center, sphere_radius, r))
+	{
+		return (vec3_create(1.0, 0.0, 0.0)); // Red
+	}
 	unit_direction = vec3_unit(ray_direction(r));
 	a = 0.5 * (unit_direction.y + 1.0);
 	white = vec3_create(1.0, 1.0, 1.0);
 	blue = vec3_create(0.5, 0.7, 1.0);
-	// Linear interpolation: (1-a)*white + a*blue
 	c1 = vec3_scale(white, 1.0 - a);
 	c2 = vec3_scale(blue, a);
 	return (vec3_add(c1, c2));
@@ -66,8 +90,9 @@ int	main(void)
 	half_u = vec3_scale(viewport_u, 0.5);
 	half_v = vec3_scale(viewport_v, 0.5);
 	focus_vec = vec3_create(0, 0, focal_length);
+	// camera_center- focal_length in z
 	vec3 viewport_upper_left = vec3_sub(vec3_sub(vec3_sub(camera_center,
-					focus_vec), // camera_center - focal_length in z
+															focus_vec),
 													half_u),
 										half_v);
 	// Location of upper left pixel center (offset by half pixel)

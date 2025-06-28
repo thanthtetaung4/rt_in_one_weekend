@@ -6,7 +6,9 @@ vec3	vec3_create(double x, double y, double z)
 {
 	vec3	v;
 
-	v = {x, y, z};
+	v.x = x;
+	v.y = y;
+	v.z = z;
 	return (v);
 }
 
