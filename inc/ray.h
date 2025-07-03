@@ -1,22 +1,12 @@
-#ifndef RAY_H
+# ifndef RAY_H
 # define RAY_H
 
-# include "point3.h"
+# include "rt.h"
 
-typedef struct
+typedef struct s_ray
 {
-	point3	orig;
-	vec3	dir;
-}			ray;
+	t_vec3 origin;
+	t_vec3 direction;
+}t_ray;
 
-// Constructor
-ray			ray_create(point3 origin, vec3 direction);
-
-// Getters
-point3		ray_origin(ray r);
-vec3		ray_direction(ray r);
-
-// Compute a point along the ray at parameter t
-point3		ray_at(ray r, double t);
-
-#endif
+# endif

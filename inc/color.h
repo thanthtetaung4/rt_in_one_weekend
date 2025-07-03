@@ -1,11 +1,9 @@
-#ifndef COLOR_H
+# ifndef COLOR_H
 # define COLOR_H
-
 # include "vec3.h"
-# include <stdio.h>
 
-typedef vec3	color;
+typedef t_vec3 t_rgb;
 
-void			write_color(FILE *out, color pixel_color);
+void	rgbthex(t_rgb color, int *hex_color);
 
-#endif
+# endif
