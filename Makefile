@@ -23,8 +23,9 @@ CFLAGS = #-Wall -Wextra -Werror
 
 # Source and object files
 DEFAULT = ./src
+UTILS = $(DEFAULT)/utils
 
-SRCS = $(DEFAULT)/main.c $(DEFAULT)/color.c $(DEFAULT)/vec3.c $(DEFAULT)/ray.c
+SRCS = $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler
