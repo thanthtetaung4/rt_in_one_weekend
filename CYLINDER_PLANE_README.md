@@ -53,19 +53,12 @@ void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t);
 
 ### Render with Cylinders
 ```c
-void render_scene_with_cylinders(FILE *f, t_camera camera,
-                                t_sphere *spheres, int num_spheres,
-                                t_cylinder *cylinders, int num_cylinders,
-                                int width, int height);
+void render_scene_with_cylinders(FILE *f, t_scene *scene);
 ```
 
 ### Render with Planes
 ```c
-void render_scene_with_planes(FILE *f, t_camera camera,
-                             t_sphere *spheres, int num_spheres,
-                             t_cylinder *cylinders, int num_cylinders,
-                             t_plane *planes, int num_planes,
-                             int width, int height);
+void render_scene_with_planes(FILE *f, t_scene *scene);
 ```
 
 ## Example Usage
@@ -87,9 +80,15 @@ t_plane plane = {
     .color = {0, 255, 255} // cyan
 };
 
+// Create and setup scene
+t_scene *scene = create_scene();
+setup_regular_scene(scene);  // or setup_box_scene(scene)
+
 // Render scene with all object types
-render_scene_with_planes(f, camera, spheres, num_spheres,
-                        &cylinder, 1, &plane, 1, width, height);
+render_scene_with_planes(f, scene);
+
+// Clean up
+free_scene(scene);
 ```
 
 ## Implementation Details

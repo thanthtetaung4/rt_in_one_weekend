@@ -76,6 +76,7 @@ typedef struct s_camera_view { ... } t_camera_view;
 ```
 
 #### 3. Function Organization
+- **Scene management functions**: Scene creation, setup, and cleanup
 - **Intersection functions**: Ray-object intersection calculations
 - **Lighting functions**: Material and lighting model implementations
 - **Utility functions**: Vector operations, color manipulation, math utilities
@@ -209,27 +210,54 @@ void IntersectRayCube(t_vec3 O, t_vec3 D, t_cube cube, double *t1, double *t2) {
 }
 ```
 
-#### 3. Add to Ray Tracing Pipeline
+#### 3. Add to Scene Structure
+```c
+// In inc/rt.h, add to t_scene structure
+typedef struct s_scene {
+    // ... existing fields ...
+    t_cube *cubes;
+    int num_cubes;
+    // ... rest of fields ...
+} t_scene;
+```
+
+#### 4. Add to Ray Tracing Pipeline
 ```c
 // Modify TraceRayWithLighting function
-t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                             t_sphere *spheres, int num_spheres,
-                             t_cylinder *cylinders, int num_cylinders,
-                             t_plane *planes, int num_planes,
-                             t_cube *cubes, int num_cubes,  // Add cubes
-                             t_ambient_light ambient,
-                             t_point_light *lights, int num_lights,
-                             t_color background) {
+t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
     // Add cube intersection testing
-    for (int i = 0; i < num_cubes; i++) {
+    for (int i = 0; i < scene->num_cubes; i++) {
         double t1, t2;
-        IntersectRayCube(O, D, cubes[i], &t1, &t2);
+        IntersectRayCube(O, D, scene->cubes[i], &t1, &t2);
         // Handle intersection results
     }
 }
 ```
 
-#### 4. Update Build System
+#### 5. Update Scene Management
+```c
+// In src/utils/scene_utils.c, update create_scene function
+t_scene *create_scene(void) {
+    t_scene *scene = malloc(sizeof(t_scene));
+    // ... existing initialization ...
+    scene->cubes = NULL;
+    scene->num_cubes = 0;
+    // ... rest of initialization ...
+    return scene;
+}
+
+// Update free_scene function
+void free_scene(t_scene *scene) {
+    // ... existing cleanup ...
+    if (scene->cubes) {
+        free(scene->cubes);
+        scene->cubes = NULL;
+    }
+    // ... rest of cleanup ...
+}
+```
+
+#### 6. Update Build System
 ```c
 # In Makefile, add new source files
 SRCS += $(UTILS)/cube_utils.c

@@ -97,10 +97,11 @@ make clean && make
 ## Technical Details
 
 ### Memory Management
-The scene uses dynamic memory allocation:
+The scene uses centralized memory management through the `t_scene` structure:
+- Scene is created with `create_scene()`
 - Objects are allocated in `setup_box_scene()`
-- Memory is freed in `free_scene()`
-- Proper cleanup prevents memory leaks
+- Memory is freed in `free_scene()` with proper cleanup
+- All scene data is managed in a single structure for easier maintenance
 
 ### Rendering Process
 1. Camera ray generation for each pixel

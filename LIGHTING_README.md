@@ -124,11 +124,15 @@ t_point_light lights[] = {
 
 ### Rendering with Lighting
 ```c
-render_scene_with_lighting(f, camera, spheres, num_spheres,
-                          cylinders, num_cylinders,
-                          planes, num_planes,
-                          ambient, lights, num_lights,
-                          width, height);
+// Create and setup scene
+t_scene *scene = create_scene();
+setup_regular_scene(scene);  // or setup_box_scene(scene)
+
+// Render with lighting
+render_scene_with_lighting(f, scene);
+
+// Clean up
+free_scene(scene);
 ```
 
 ## Material Presets

@@ -54,6 +54,10 @@ A scene consists of:
 - **Objects**: Spheres, cylinders, and planes
 - **Lights**: Ambient and point lights
 - **Materials**: Surface properties for objects
+- **Background**: Scene background color
+- **Dimensions**: Image width and height
+
+The ray tracer uses a centralized scene management system where all scene data is stored in a single `t_scene` structure for easier management and cleaner function calls.
 
 ### Basic Scene Setup
 
@@ -155,8 +159,15 @@ int main() {
     void *mlx_ptr = mlx_init();
     void *win_ptr = mlx_new_window(mlx_ptr, 800, 600, "Custom Scene");
 
+    // Create and setup scene
+    t_scene *scene = create_scene();
+    if (!scene) {
+        printf("Error: Failed to create scene\n");
+        return 1;
+    }
+
     // Setup camera
-    t_camera camera = {
+    scene->camera = (t_camera){
         .P = vec3_create(0, 0, -5),
         .D = vec3_create(0, 0, 1),
         .fov = PI / 4
@@ -179,22 +190,22 @@ int main() {
         .shininess = 10
     };
 
-    // Create objects
-    t_sphere spheres[] = {
-        {
-            .center = vec3_create(0, 0, 3),
-            .radius = 1.0,
-            .material = red_material
-        },
-        {
-            .center = vec3_create(2, 0, 2),
-            .radius = 0.8,
-            .material = blue_material
-        }
+    // Setup spheres
+    scene->num_spheres = 2;
+    scene->spheres = malloc(scene->num_spheres * sizeof(t_sphere));
+    scene->spheres[0] = (t_sphere){
+        .center = vec3_create(0, 0, 3),
+        .radius = 1.0,
+        .material = red_material
+    };
+    scene->spheres[1] = (t_sphere){
+        .center = vec3_create(2, 0, 2),
+        .radius = 0.8,
+        .material = blue_material
     };
 
     // Setup lighting
-    t_ambient_light ambient = {
+    scene->ambient = (t_ambient_light){
         .intensity = 0.3,
         .color = {255, 255, 255}
     };
