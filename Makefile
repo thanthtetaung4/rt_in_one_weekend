@@ -69,6 +69,7 @@ clean:
 	@$(MAKE) -C $(MLX_PATH) clean
 	@echo "$(NAME) cleaning..."
 	@rm -f $(OBJS)
+	@rm -f $(BOX_OBJS)
 	@echo "\033[35m[Cleaned up]\033[0m"
 
 # Clean object files and executable
