@@ -16,14 +16,14 @@ rt_in_one_weekend/
 ├── src/                   # Source code implementation
 │   ├── main.c             # Main application entry point
 │   ├── main_box.c         # Box scene demo application
-│   ├── scene_box.c        # Box scene setup and management
 │   ├── utils/             # Utility function implementations
 │   │   ├── camera_utils.c # Camera setup and view calculations
 │   │   ├── color_utils.c  # Color manipulation functions
 │   │   ├── lighting_utils.c # Lighting calculations and shadows
 │   │   ├── math_utils.c   # Mathematical operations
 │   │   ├── ray_utils.c    # Ray-object intersection algorithms
-│   │   └── render_utils.c # Rendering pipeline functions
+│   │   ├── render_utils.c # Rendering pipeline functions
+│   │   └── scene_utils.c  # Scene management and setup functions
 │   └── vec3/              # Vector operations implementation
 │       └── vec3.c
 ├── libft/                 # Custom C library functions
@@ -41,6 +41,23 @@ rt_in_one_weekend/
 
 #### 2. Data Structures
 ```c
+// Scene management (centralized)
+typedef struct s_scene {
+    t_camera camera;
+    t_sphere *spheres;
+    int num_spheres;
+    t_cylinder *cylinders;
+    int num_cylinders;
+    t_plane *planes;
+    int num_planes;
+    t_ambient_light ambient;
+    t_point_light *lights;
+    int num_lights;
+    t_color background;
+    int width;
+    int height;
+} t_scene;
+
 // Geometric primitives
 typedef struct s_sphere { ... } t_sphere;
 typedef struct s_cylinder { ... } t_cylinder;

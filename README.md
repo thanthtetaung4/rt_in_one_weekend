@@ -27,14 +27,14 @@ rt_in_one_weekend/
 ├── src/                   # Source code
 │   ├── main.c             # Main application with MLX integration
 │   ├── main_box.c         # Box scene demo
-│   ├── scene_box.c        # Box scene setup
 │   ├── utils/             # Utility functions
 │   │   ├── camera_utils.c # Camera setup and view calculations
 │   │   ├── color_utils.c  # Color manipulation
 │   │   ├── lighting_utils.c # Lighting calculations and shadows
 │   │   ├── math_utils.c   # Mathematical operations
 │   │   ├── ray_utils.c    # Ray-object intersections
-│   │   └── render_utils.c # Rendering pipeline
+│   │   ├── render_utils.c # Rendering pipeline
+│   │   └── scene_utils.c  # Scene management and setup
 │   └── vec3/              # Vector operations implementation
 │       └── vec3.c
 ├── libft/                 # Custom C library functions
@@ -133,6 +133,47 @@ typedef struct s_material {
 - **Specular component**: Blinn-Phong specular highlights
 - **Color clamping**: Prevents color overflow
 
+### Scene Management
+
+#### Scene Data Structure
+The ray tracer uses a comprehensive scene structure that encapsulates all rendering data:
+
+```c
+typedef struct s_scene {
+    // Camera
+    t_camera camera;
+
+    // Scene objects
+    t_sphere *spheres;
+    int num_spheres;
+    t_cylinder *cylinders;
+    int num_cylinders;
+    t_plane *planes;
+    int num_planes;
+
+    // Lighting
+    t_ambient_light ambient;
+    t_point_light *lights;
+    int num_lights;
+
+    // Background color
+    t_color background;
+
+    // Image dimensions
+    int width;
+    int height;
+} t_scene;
+```
+
+#### Scene Management Functions
+```c
+// Create and manage scenes
+t_scene *create_scene(void);
+void free_scene(t_scene *scene);
+void setup_regular_scene(t_scene *scene);
+void setup_box_scene(t_scene *scene);
+```
+
 ### Camera System
 
 #### Camera Properties
@@ -165,21 +206,13 @@ typedef struct s_camera {
 
 3. **Intersection Testing**
    ```c
-   t_color color = TraceRayWithLighting(origin, direction, t_min, t_max,
-                                       spheres, num_spheres,
-                                       cylinders, num_cylinders,
-                                       planes, num_planes,
-                                       ambient, lights, num_lights,
-                                       background);
+   t_color color = TraceRayWithLighting(origin, direction, t_min, t_max, scene);
    ```
 
 4. **Lighting Calculation**
    ```c
    t_color final_color = calculate_lighting(hit_point, normal, view_direction,
-                                           material, ambient, lights, num_lights,
-                                           spheres, num_spheres,
-                                           cylinders, num_cylinders,
-                                           planes, num_planes);
+                                           material, scene);
    ```
 
 ### Vector Operations
@@ -237,6 +270,7 @@ t_color color_clamp(t_color color);
 
 ### Memory Management
 
+- **Centralized scene management**: All scene data managed through `t_scene` structure
 - **Dynamic allocation**: Proper memory allocation for scene objects
 - **Cleanup functions**: Memory deallocation to prevent leaks
 - **Stack usage**: Local variables for temporary calculations

@@ -162,6 +162,85 @@ void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t) {
 }
 ```
 
+## 🎬 Scene Management
+
+### Scene Data Structure
+
+The ray tracer uses a centralized scene management system that encapsulates all rendering data in a single structure:
+
+```c
+typedef struct s_scene {
+    // Camera
+    t_camera camera;
+
+    // Scene objects
+    t_sphere *spheres;
+    int num_spheres;
+    t_cylinder *cylinders;
+    int num_cylinders;
+    t_plane *planes;
+    int num_planes;
+
+    // Lighting
+    t_ambient_light ambient;
+    t_point_light *lights;
+    int num_lights;
+
+    // Background color
+    t_color background;
+
+    // Image dimensions
+    int width;
+    int height;
+} t_scene;
+```
+
+### Scene Management Functions
+
+#### Scene Creation and Cleanup
+```c
+// Create a new scene with default values
+t_scene *create_scene(void);
+
+// Free all scene memory
+void free_scene(t_scene *scene);
+```
+
+#### Scene Setup Functions
+```c
+// Setup the regular demo scene
+void setup_regular_scene(t_scene *scene);
+
+// Setup the box scene with 4 black planes
+void setup_box_scene(t_scene *scene);
+```
+
+### Benefits of Scene Structure
+
+1. **Cleaner Function Signatures**: Functions no longer need long parameter lists
+2. **Centralized Memory Management**: All scene data allocated and freed together
+3. **Easier Scene Creation**: Predefined scene setups for different demos
+4. **Better Organization**: All related data grouped together
+5. **Extensibility**: Easy to add new scene properties or objects
+
+### Updated Function Signatures
+
+**Before (multiple parameters):**
+```c
+t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max,
+                             t_sphere *spheres, int num_spheres,
+                             t_cylinder *cylinders, int num_cylinders,
+                             t_plane *planes, int num_planes,
+                             t_ambient_light ambient,
+                             t_point_light *lights, int num_lights,
+                             t_color background);
+```
+
+**After (single scene parameter):**
+```c
+t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
+```
+
 ## 💡 Lighting Model
 
 ### Phong Lighting Model

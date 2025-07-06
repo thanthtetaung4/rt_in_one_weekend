@@ -122,117 +122,109 @@ void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t) {
     }
 }
 
-t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                 t_sphere *spheres, int num_spheres, t_color background) {
+t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
     double closest_t = DBL_MAX;
     t_sphere *closest_sphere = NULL;
 
-    for (int i = 0; i < num_spheres; i++) {
+    for (int i = 0; i < scene->num_spheres; i++) {
         double t1, t2;
-        IntersectRaySphere(O, D, spheres[i], &t1, &t2);
+        IntersectRaySphere(O, D, scene->spheres[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
             closest_t = t1;
-            closest_sphere = &spheres[i];
+            closest_sphere = &scene->spheres[i];
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_t) {
             closest_t = t2;
-            closest_sphere = &spheres[i];
+            closest_sphere = &scene->spheres[i];
         }
     }
 
     if (closest_sphere == NULL)
-        return background;
+        return scene->background;
 
     return closest_sphere->material.color;
 }
 
-t_color TraceRayWithCylinders(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                              t_sphere *spheres, int num_spheres,
-                              t_cylinder *cylinders, int num_cylinders,
-                              t_color background) {
+t_color TraceRayWithCylinders(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
     double closest_t = DBL_MAX;
-    t_color closest_color = background;
+    t_color closest_color = scene->background;
 
     // Check spheres
-    for (int i = 0; i < num_spheres; i++) {
+    for (int i = 0; i < scene->num_spheres; i++) {
         double t1, t2;
-        IntersectRaySphere(O, D, spheres[i], &t1, &t2);
+        IntersectRaySphere(O, D, scene->spheres[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
             closest_t = t1;
-            closest_color = spheres[i].material.color;
+            closest_color = scene->spheres[i].material.color;
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_t) {
             closest_t = t2;
-            closest_color = spheres[i].material.color;
+            closest_color = scene->spheres[i].material.color;
         }
     }
 
     // Check cylinders
-    for (int i = 0; i < num_cylinders; i++) {
+    for (int i = 0; i < scene->num_cylinders; i++) {
         double t1, t2;
-        IntersectRayCylinder(O, D, cylinders[i], &t1, &t2);
+        IntersectRayCylinder(O, D, scene->cylinders[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
             closest_t = t1;
-            closest_color = cylinders[i].material.color;
+            closest_color = scene->cylinders[i].material.color;
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_t) {
             closest_t = t2;
-            closest_color = cylinders[i].material.color;
+            closest_color = scene->cylinders[i].material.color;
         }
     }
 
     return closest_color;
 }
 
-t_color TraceRayWithPlanes(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                           t_sphere *spheres, int num_spheres,
-                           t_cylinder *cylinders, int num_cylinders,
-                           t_plane *planes, int num_planes,
-                           t_color background) {
+t_color TraceRayWithPlanes(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
     double closest_t = DBL_MAX;
-    t_color closest_color = background;
+    t_color closest_color = scene->background;
 
     // Check spheres
-    for (int i = 0; i < num_spheres; i++) {
+    for (int i = 0; i < scene->num_spheres; i++) {
         double t1, t2;
-        IntersectRaySphere(O, D, spheres[i], &t1, &t2);
+        IntersectRaySphere(O, D, scene->spheres[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
             closest_t = t1;
-            closest_color = spheres[i].material.color;
+            closest_color = scene->spheres[i].material.color;
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_t) {
             closest_t = t2;
-            closest_color = spheres[i].material.color;
+            closest_color = scene->spheres[i].material.color;
         }
     }
 
     // Check cylinders
-    for (int i = 0; i < num_cylinders; i++) {
+    for (int i = 0; i < scene->num_cylinders; i++) {
         double t1, t2;
-        IntersectRayCylinder(O, D, cylinders[i], &t1, &t2);
+        IntersectRayCylinder(O, D, scene->cylinders[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
             closest_t = t1;
-            closest_color = cylinders[i].material.color;
+            closest_color = scene->cylinders[i].material.color;
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_t) {
             closest_t = t2;
-            closest_color = cylinders[i].material.color;
+            closest_color = scene->cylinders[i].material.color;
         }
     }
 
     // Check planes
-    for (int i = 0; i < num_planes; i++) {
+    for (int i = 0; i < scene->num_planes; i++) {
         double t;
-        IntersectRayPlane(O, D, planes[i], &t);
+        IntersectRayPlane(O, D, scene->planes[i], &t);
 
         if (t >= t_min && t <= t_max && t < closest_t) {
             closest_t = t;
-            closest_color = planes[i].material.color;
+            closest_color = scene->planes[i].material.color;
         }
     }
 
@@ -294,45 +286,42 @@ t_hit_record get_plane_hit(t_vec3 O, t_vec3 D, t_plane plane, double t) {
 }
 
 // New trace function that returns hit information
-t_hit_record TraceRayHit(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                         t_sphere *spheres, int num_spheres,
-                         t_cylinder *cylinders, int num_cylinders,
-                         t_plane *planes, int num_planes) {
+t_hit_record TraceRayHit(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
     t_hit_record closest_hit = {DBL_MAX, {0, 0, 0}, {0, 0, 0}, {{0, 0, 0}, 0, 0, 0, 0}, 0};
 
     // Check spheres
-    for (int i = 0; i < num_spheres; i++) {
+    for (int i = 0; i < scene->num_spheres; i++) {
         double t1, t2;
-        IntersectRaySphere(O, D, spheres[i], &t1, &t2);
+        IntersectRaySphere(O, D, scene->spheres[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_hit.t) {
-            closest_hit = get_sphere_hit(O, D, spheres[i], t1);
+            closest_hit = get_sphere_hit(O, D, scene->spheres[i], t1);
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_hit.t) {
-            closest_hit = get_sphere_hit(O, D, spheres[i], t2);
+            closest_hit = get_sphere_hit(O, D, scene->spheres[i], t2);
         }
     }
 
     // Check cylinders
-    for (int i = 0; i < num_cylinders; i++) {
+    for (int i = 0; i < scene->num_cylinders; i++) {
         double t1, t2;
-        IntersectRayCylinder(O, D, cylinders[i], &t1, &t2);
+        IntersectRayCylinder(O, D, scene->cylinders[i], &t1, &t2);
 
         if (t1 >= t_min && t1 <= t_max && t1 < closest_hit.t) {
-            closest_hit = get_cylinder_hit(O, D, cylinders[i], t1);
+            closest_hit = get_cylinder_hit(O, D, scene->cylinders[i], t1);
         }
         if (t2 >= t_min && t2 <= t_max && t2 < closest_hit.t) {
-            closest_hit = get_cylinder_hit(O, D, cylinders[i], t2);
+            closest_hit = get_cylinder_hit(O, D, scene->cylinders[i], t2);
         }
     }
 
     // Check planes
-    for (int i = 0; i < num_planes; i++) {
+    for (int i = 0; i < scene->num_planes; i++) {
         double t;
-        IntersectRayPlane(O, D, planes[i], &t);
+        IntersectRayPlane(O, D, scene->planes[i], &t);
 
         if (t >= t_min && t <= t_max && t < closest_hit.t) {
-            closest_hit = get_plane_hit(O, D, planes[i], t);
+            closest_hit = get_plane_hit(O, D, scene->planes[i], t);
         }
     }
 
@@ -340,23 +329,15 @@ t_hit_record TraceRayHit(t_vec3 O, t_vec3 D, double t_min, double t_max,
 }
 
 // Trace function with lighting
-t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                             t_sphere *spheres, int num_spheres,
-                             t_cylinder *cylinders, int num_cylinders,
-                             t_plane *planes, int num_planes,
-                             t_ambient_light ambient,
-                             t_point_light *lights, int num_lights,
-                             t_color background) {
-    t_hit_record hit = TraceRayHit(O, D, t_min, t_max, spheres, num_spheres,
-                                  cylinders, num_cylinders, planes, num_planes);
+t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene) {
+    t_hit_record hit = TraceRayHit(O, D, t_min, t_max, scene);
 
     if (!hit.hit) {
-        return background;
+        return scene->background;
     }
 
     // Calculate lighting
     t_vec3 view_direction = vec3_normalize(vec3_sub(O, hit.point));
     return calculate_lighting(hit.point, hit.normal, view_direction,
-                             hit.material, ambient, lights, num_lights,
-                             spheres, num_spheres, cylinders, num_cylinders, planes, num_planes);
+                             hit.material, scene);
 }

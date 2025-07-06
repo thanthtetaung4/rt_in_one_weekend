@@ -74,38 +74,52 @@ typedef struct s_camera_view {
     t_vec3 pixel_delta_v;
 } t_camera_view;
 
+// ======================= Scene Data Structure =======================
+typedef struct s_scene {
+    // Camera
+    t_camera camera;
+
+    // Scene objects
+    t_sphere *spheres;
+    int num_spheres;
+    t_cylinder *cylinders;
+    int num_cylinders;
+    t_plane *planes;
+    int num_planes;
+
+    // Lighting
+    t_ambient_light ambient;
+    t_point_light *lights;
+    int num_lights;
+
+    // Background color
+    t_color background;
+
+    // Image dimensions
+    int width;
+    int height;
+} t_scene;
+
 // ======================= Function Declarations =======================
+
+// Scene management functions
+t_scene *create_scene(void);
+void free_scene(t_scene *scene);
+void setup_regular_scene(t_scene *scene);
+void setup_box_scene(t_scene *scene);
 
 // Ray tracing functions
 void IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere, double *t1, double *t2);
 void IntersectRayCylinder(t_vec3 O, t_vec3 D, t_cylinder cylinder, double *t1, double *t2);
 void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t);
-t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                 t_sphere *spheres, int num_spheres, t_color background);
-t_color TraceRayWithCylinders(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                              t_sphere *spheres, int num_spheres,
-                              t_cylinder *cylinders, int num_cylinders,
-                              t_color background);
-t_color TraceRayWithPlanes(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                           t_sphere *spheres, int num_spheres,
-                           t_cylinder *cylinders, int num_cylinders,
-                           t_plane *planes, int num_planes,
-                           t_color background);
-t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max,
-                             t_sphere *spheres, int num_spheres,
-                             t_cylinder *cylinders, int num_cylinders,
-                             t_plane *planes, int num_planes,
-                             t_ambient_light ambient,
-                             t_point_light *lights, int num_lights,
-                             t_color background);
+t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
+t_color TraceRayWithCylinders(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
+t_color TraceRayWithPlanes(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
+t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
 
 // Lighting functions
 t_color calculate_lighting(t_vec3 hit_point, t_vec3 normal, t_vec3 view_direction,
-                          t_material material, t_ambient_light ambient,
-                          t_point_light *lights, int num_lights,
-                          t_sphere *spheres, int num_spheres,
-                          t_cylinder *cylinders, int num_cylinders,
-                          t_plane *planes, int num_planes);
+                          t_material material, t_scene *scene);
 t_color color_multiply(t_color a, t_color b);
 t_color color_scale(t_color color, double factor);
 t_color color_add(t_color a, t_color b);
@@ -115,32 +129,9 @@ t_color color_clamp(t_color color);
 t_camera_view setup_camera(t_camera camera, int image_width, int image_height);
 
 // Render functions
-void render_scene(FILE *f, t_camera camera, t_sphere *spheres, int num_spheres,
-                  int width, int height);
-void render_scene_with_cylinders(FILE *f, t_camera camera,
-                                t_sphere *spheres, int num_spheres,
-                                t_cylinder *cylinders, int num_cylinders,
-                                int width, int height);
-void render_scene_with_planes(FILE *f, t_camera camera,
-                             t_sphere *spheres, int num_spheres,
-                             t_cylinder *cylinders, int num_cylinders,
-                             t_plane *planes, int num_planes,
-                             int width, int height);
-void render_scene_with_lighting(FILE *f, t_camera camera,
-                               t_sphere *spheres, int num_spheres,
-                               t_cylinder *cylinders, int num_cylinders,
-                               t_plane *planes, int num_planes,
-                               t_ambient_light ambient,
-                               t_point_light *lights, int num_lights,
-                               int width, int height);
-
-// Scene setup functions
-void setup_box_scene(t_sphere **spheres, int *num_spheres,
-                     t_cylinder **cylinders, int num_cylinders,
-                     t_plane **planes, int *num_planes,
-                     t_ambient_light *ambient,
-                     t_point_light **lights, int *num_lights);
-void free_scene(t_sphere *spheres, t_cylinder *cylinders,
-                t_plane *planes, t_point_light *lights);
+void render_scene(FILE *f, t_scene *scene);
+void render_scene_with_cylinders(FILE *f, t_scene *scene);
+void render_scene_with_planes(FILE *f, t_scene *scene);
+void render_scene_with_lighting(FILE *f, t_scene *scene);
 
 # endif

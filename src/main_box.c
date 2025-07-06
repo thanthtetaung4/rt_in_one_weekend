@@ -6,17 +6,10 @@ void *mlx_ptr;
 void *win_ptr;
 void *img_ptr;
 char *img_data;
-int img_width = 800, img_height = 600;
 int bits_per_pixel, size_line, endian;
 
 // Scene data (moved to global for access in event handlers)
-t_camera camera;
-t_sphere *spheres;
-t_cylinder *cylinders;
-t_plane *planes;
-t_point_light *lights;
-t_ambient_light ambient;
-int num_spheres, num_cylinders = 2, num_planes, num_lights;
+t_scene *scene;
 
 // Function to convert color to MLX format
 int color_to_mlx(t_color color) {
@@ -25,21 +18,15 @@ int color_to_mlx(t_color color) {
 
 // Function to render scene to MLX image
 void render_to_mlx_image() {
-    t_color background = {0, 0, 0};
-    t_camera_view view = setup_camera(camera, img_width, img_height);
+    t_camera_view view = setup_camera(scene->camera, scene->width, scene->height);
 
-    for (int y = 0; y < img_height; y++) {
-        for (int x = 0; x < img_width; x++) {
+    for (int y = 0; y < scene->height; y++) {
+        for (int x = 0; x < scene->width; x++) {
             t_vec3 pixel = vec3_add(view.pixel00,
                 vec3_add(vec3_scale(view.pixel_delta_u, x),
-                         vec3_scale(view.pixel_delta_v, img_height - 1 - y)));
-            t_vec3 ray_dir = vec3_normalize(vec3_sub(pixel, camera.P));
-            t_color color = TraceRayWithLighting(camera.P, ray_dir, 1.0, DBL_MAX,
-                                                spheres, num_spheres,
-                                                cylinders, num_cylinders,
-                                                planes, num_planes,
-                                                ambient, lights, num_lights,
-                                                background);
+                         vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
+            t_vec3 ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
+            t_color color = TraceRayWithLighting(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
 
             // Convert color to MLX format and put pixel
             int mlx_color = color_to_mlx(color);
@@ -52,7 +39,7 @@ void render_to_mlx_image() {
 int key_hook(int keycode, void *param) {
     (void)param;
     if (keycode == 65307) { // ESC key
-        free_scene(spheres, cylinders, planes, lights);
+        free_scene(scene);
         mlx_destroy_window(mlx_ptr, win_ptr);
         mlx_destroy_display(mlx_ptr);
         free(mlx_ptr);
@@ -64,7 +51,7 @@ int key_hook(int keycode, void *param) {
 // Close window hook function
 int close_hook(void *param) {
     (void)param;
-    free_scene(spheres, cylinders, planes, lights);
+    free_scene(scene);
     mlx_destroy_window(mlx_ptr, win_ptr);
     mlx_destroy_display(mlx_ptr);
     free(mlx_ptr);
@@ -79,25 +66,27 @@ int main() {
         return 1;
     }
 
-    // Create window
-    win_ptr = mlx_new_window(mlx_ptr, img_width, img_height, "Box Scene - Ray Tracer");
-    if (!win_ptr) {
-        printf("Error: Failed to create window\n");
+    // Create scene
+    scene = create_scene();
+    if (!scene) {
+        printf("Error: Failed to create scene\n");
         mlx_destroy_display(mlx_ptr);
         free(mlx_ptr);
         return 1;
     }
 
-    // Camera positioned to look into the box
-    camera = (t_camera){
-        .P = vec3_create(0, 0, -4),  // Position camera outside the box
-        .D = vec3_create(0, 0, 1),   // Look into the box
-        .fov = PI / 3                 // 60 degrees field of view
-    };
+    // Setup box scene
+    setup_box_scene(scene);
 
-    // Setup the box scene
-    setup_box_scene(&spheres, &num_spheres, &cylinders, num_cylinders,
-                    &planes, &num_planes, &ambient, &lights, &num_lights);
+    // Create window
+    win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height, "Box Scene - Ray Tracer");
+    if (!win_ptr) {
+        printf("Error: Failed to create window\n");
+        free_scene(scene);
+        mlx_destroy_display(mlx_ptr);
+        free(mlx_ptr);
+        return 1;
+    }
 
     // Render scene to window
     printf("Rendering box scene to window...\n");
