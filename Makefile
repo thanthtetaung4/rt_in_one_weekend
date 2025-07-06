@@ -26,22 +26,30 @@ DEFAULT = ./src
 UTILS = $(DEFAULT)/utils
 VEC3 = $(DEFAULT)/vec3
 
-SRCS = $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c
+SRCS = $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(DEFAULT)/scene_box.c
 OBJS = $(SRCS:.c=.o)
+
+BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(DEFAULT)/scene_box.c
+BOX_OBJS = $(BOX_SRCS:.c=.o)
 
 # Compiler
 CC = cc
 
-# Executable name
+# Executable names
 NAME = rt
+BOX_NAME = rt_box
 
 # Rules
-all: $(NAME)
-	 @echo "\033[32m[$(NAME) is ready for use]\033[0m"
+all: $(NAME) $(BOX_NAME)
+	 @echo "\033[32m[$(NAME) and $(BOX_NAME) are ready for use]\033[0m"
 
 $(NAME): $(MLX_LIB) $(OBJS)  $(LIBFT)
 	@echo "$(NAME) compiling..."
 	@$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -L$(LIBFT_PATH) $(LIBFT) $(MLX_LIB) -lm -o $(NAME)
+
+$(BOX_NAME): $(MLX_LIB) $(BOX_OBJS) $(LIBFT)
+	@echo "$(BOX_NAME) compiling..."
+	@$(CC) $(CFLAGS) $(BOX_OBJS) $(MLX_FLAGS) -L$(LIBFT_PATH) $(LIBFT) $(MLX_LIB) -lm -o $(BOX_NAME)
 
 # Clone and compile the MiniLibX library
 $(MLX_LIB):
@@ -65,7 +73,7 @@ clean:
 
 # Clean object files and executable
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(BOX_NAME)
 	@$(MAKE) -C $(LIBFT_PATH) fclean
 	# @$(MAKE) -C $(MLX_PATH) fclean
 	@echo "\033[35m[Fully cleaned up]\033[0m"

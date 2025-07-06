@@ -4,5 +4,6 @@
 # include "rt.h"
 
 double	degrees_to_radians(double degrees);
+double	ft_fabs(double x);
 
 #endif
