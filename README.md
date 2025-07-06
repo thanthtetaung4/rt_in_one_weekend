@@ -298,6 +298,14 @@ The project includes multiple test scenes:
 - **[Box Scene](BOX_SCENE_README.md)**: Box scene setup and configuration
 - **[Cylinder and Plane](CYLINDER_PLANE_README.md)**: Geometric primitive documentation
 
+### Ray-Object Intersection Documentation
+
+Each geometric primitive has its own detailed documentation:
+
+- **[Sphere Intersection](SPHERE_INTERSECTION.md)**: Complete sphere ray intersection guide
+- **[Cylinder Intersection](CYLINDER_INTERSECTION.md)**: Comprehensive cylinder intersection documentation
+- **[Plane Intersection](PLANE_INTERSECTION.md)**: Plane intersection implementation details
+
 ## 🔍 Troubleshooting
 
 ### Common Issues

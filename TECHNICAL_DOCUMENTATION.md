@@ -43,124 +43,94 @@ typedef struct s_ray {
 
 ## 🎯 Ray-Object Intersections
 
-### Sphere Intersection
+The ray tracer supports three geometric primitives: spheres, cylinders, and planes. Each primitive has its own intersection algorithm and normal calculation method.
 
-#### Mathematical Derivation
-For a sphere with center C and radius r, the intersection with ray P(t) = O + tD is found by solving:
+### Available Primitives
 
-||P(t) - C||² = r²
+#### Sphere Intersection
+- **File**: `SPHERE_INTERSECTION.md`
+- **Algorithm**: Quadratic equation solution
+- **Complexity**: O(1) per sphere
+- **Features**: Complete mathematical derivation, implementation details, normal calculation, and usage examples
 
-Substituting the ray equation:
-||O + tD - C||² = r²
+#### Cylinder Intersection
+- **File**: `CYLINDER_INTERSECTION.md`
+- **Algorithm**: Infinite cylinder + height constraints + end caps
+- **Complexity**: O(1) per cylinder
+- **Features**: Body and end cap intersections, comprehensive normal calculation, and edge case handling
 
-Let CO = O - C, then:
-||CO + tD||² = r²
+#### Plane Intersection
+- **File**: `PLANE_INTERSECTION.md`
+- **Algorithm**: Direct plane equation solution
+- **Complexity**: O(1) per plane
+- **Features**: Infinite plane support, parallel ray handling, and numerical stability
 
-Expanding:
-(CO + tD) · (CO + tD) = r²
-CO · CO + 2t(CO · D) + t²(D · D) = r²
+### Common Intersection Interface
 
-This is a quadratic equation: at² + bt + c = 0, where:
-- a = D · D = 1 (since D is normalized)
-- b = 2(CO · D)
-- c = CO · CO - r²
+All intersection functions follow a consistent interface:
 
-#### Implementation
 ```c
-void IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere, double *t1, double *t2) {
-    t_vec3 CO = vec3_sub(O, sphere.center);
-    double a = vec3_dot(D, D);           // Always 1 for normalized D
-    double b = 2 * vec3_dot(CO, D);
-    double c = vec3_dot(CO, CO) - sphere.radius * sphere.radius;
-    double discriminant = b * b - 4 * a * c;
+// Sphere intersection
+void IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere, double *t1, double *t2);
 
-    if (discriminant < 0) {
-        *t1 = *t2 = DBL_MAX;  // No intersection
-        return;
-    }
+// Cylinder intersection
+void IntersectRayCylinder(t_vec3 O, t_vec3 D, t_cylinder cylinder, double *t1, double *t2);
 
-    *t1 = (-b + sqrt(discriminant)) / (2 * a);
-    *t2 = (-b - sqrt(discriminant)) / (2 * a);
+// Plane intersection
+void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t);
+```
+
+### Integration with Scene Structure
+
+All intersection functions work seamlessly with the centralized scene management system:
+
+```c
+// Example: Testing all objects in a scene
+t_scene *scene = create_scene();
+setup_regular_scene(scene);
+
+// Test spheres
+for (int i = 0; i < scene->num_spheres; i++) {
+    double t1, t2;
+    IntersectRaySphere(ray_origin, ray_direction, scene->spheres[i], &t1, &t2);
+    // Process intersection...
+}
+
+// Test cylinders
+for (int i = 0; i < scene->num_cylinders; i++) {
+    double t1, t2;
+    IntersectRayCylinder(ray_origin, ray_direction, scene->cylinders[i], &t1, &t2);
+    // Process intersection...
+}
+
+// Test planes
+for (int i = 0; i < scene->num_planes; i++) {
+    double t;
+    IntersectRayPlane(ray_origin, ray_direction, scene->planes[i], &t);
+    // Process intersection...
 }
 ```
 
-#### Normal Calculation
-The surface normal at intersection point P is:
-N = (P - C) / ||P - C|| = (P - C) / r
+### Performance Characteristics
 
-### Cylinder Intersection
+| Primitive | Time Complexity | Space Complexity | Typical Operations |
+|-----------|----------------|------------------|-------------------|
+| Sphere    | O(1)           | O(1)             | ~10 FP operations |
+| Cylinder  | O(1)           | O(1)             | ~20-30 FP operations |
+| Plane     | O(1)           | O(1)             | ~5 FP operations |
 
-#### Infinite Cylinder
-For a cylinder with axis A (normalized) and radius r, the intersection is found by solving a quadratic equation in the plane perpendicular to the axis.
+### Documentation Structure
 
-**Algorithm:**
-1. Project ray origin and direction onto cylinder axis
-2. Find perpendicular components
-3. Solve quadratic equation for infinite cylinder
-4. Check height constraints
-5. Check end cap intersections
+Each primitive has its own comprehensive documentation file containing:
+- **Mathematical foundation** and derivation
+- **Implementation details** with complete code
+- **Normal calculation** methods
+- **Usage examples** and integration patterns
+- **Performance considerations** and optimization tips
+- **Testing strategies** and edge case handling
+- **Related functions** and references
 
-#### Implementation Details
-```c
-void IntersectRayCylinder(t_vec3 O, t_vec3 D, t_cylinder cylinder, double *t1, double *t2) {
-    t_vec3 CO = vec3_sub(O, cylinder.center);
-
-    // Project onto cylinder axis
-    double D_dot_axis = vec3_dot(D, cylinder.axis);
-    double CO_dot_axis = vec3_dot(CO, cylinder.axis);
-
-    // Perpendicular components
-    t_vec3 D_perp = vec3_sub(D, vec3_scale(cylinder.axis, D_dot_axis));
-    t_vec3 CO_perp = vec3_sub(CO, vec3_scale(cylinder.axis, CO_dot_axis));
-
-    // Quadratic equation coefficients
-    double a = vec3_dot(D_perp, D_perp);
-    double b = 2 * vec3_dot(D_perp, CO_perp);
-    double c = vec3_dot(CO_perp, CO_perp) - cylinder.radius * cylinder.radius;
-
-    // Solve quadratic equation...
-    // Check height constraints...
-    // Check end caps...
-}
-```
-
-#### End Cap Intersection
-For end caps at positions ±h/2 along the axis:
-1. Intersect ray with planes at cap positions
-2. Check if intersection point is within cylinder radius
-3. Calculate proper surface normals
-
-### Plane Intersection
-
-#### Mathematical Derivation
-For a plane with normal N and point P₀, the plane equation is:
-N · (P - P₀) = 0
-
-Intersecting with ray P(t) = O + tD:
-N · (O + tD - P₀) = 0
-N · (O - P₀) + t(N · D) = 0
-
-Solving for t:
-t = N · (P₀ - O) / (N · D)
-
-#### Implementation
-```c
-void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t) {
-    double denom = vec3_dot(D, plane.normal);
-
-    if (ft_fabs(denom) < 1e-6) {
-        *t = DBL_MAX;  // Ray parallel to plane
-        return;
-    }
-
-    t_vec3 to_plane = vec3_sub(plane.point, O);
-    *t = vec3_dot(to_plane, plane.normal) / denom;
-
-    if (*t < 0) {
-        *t = DBL_MAX;  // Intersection behind ray origin
-    }
-}
-```
+For detailed information about any specific primitive, refer to its dedicated documentation file.
 
 ## 🎬 Scene Management
 
