@@ -1,0 +1,502 @@
+# Technical Documentation
+
+This document provides detailed technical information about the ray tracing implementation, including mathematical foundations, algorithms, and implementation specifics.
+
+## 📐 Mathematical Foundations
+
+### Vector Mathematics
+
+#### 3D Vector Operations
+The ray tracer uses a complete 3D vector library for all geometric calculations:
+
+```c
+typedef struct s_vec3 {
+    double x, y, z;
+} t_vec3;
+```
+
+**Core Operations:**
+- **Addition**: `vec3_add(a, b)` = (a.x + b.x, a.y + b.y, a.z + b.z)
+- **Subtraction**: `vec3_sub(a, b)` = (a.x - b.x, a.y - b.y, a.z - b.z)
+- **Scalar multiplication**: `vec3_scale(v, s)` = (v.x * s, v.y * s, v.z * s)
+- **Dot product**: `vec3_dot(a, b)` = a.x * b.x + a.y * b.y + a.z * b.z
+- **Cross product**: `vec3_cross(a, b)` = (a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
+- **Normalization**: `vec3_normalize(v)` = v / ||v||
+
+#### Vector Properties
+- **Magnitude**: ||v|| = √(v.x² + v.y² + v.z²)
+- **Unit vector**: Vector with magnitude 1
+- **Orthogonal vectors**: Two vectors with dot product = 0
+
+### Ray Representation
+
+A ray is defined by an origin point and a direction vector:
+
+```c
+typedef struct s_ray {
+    t_vec3 origin;      // Ray starting point
+    t_vec3 direction;   // Normalized direction vector
+} t_ray;
+```
+
+**Ray equation**: P(t) = origin + t * direction, where t ≥ 0
+
+## 🎯 Ray-Object Intersections
+
+### Sphere Intersection
+
+#### Mathematical Derivation
+For a sphere with center C and radius r, the intersection with ray P(t) = O + tD is found by solving:
+
+||P(t) - C||² = r²
+
+Substituting the ray equation:
+||O + tD - C||² = r²
+
+Let CO = O - C, then:
+||CO + tD||² = r²
+
+Expanding:
+(CO + tD) · (CO + tD) = r²
+CO · CO + 2t(CO · D) + t²(D · D) = r²
+
+This is a quadratic equation: at² + bt + c = 0, where:
+- a = D · D = 1 (since D is normalized)
+- b = 2(CO · D)
+- c = CO · CO - r²
+
+#### Implementation
+```c
+void IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere, double *t1, double *t2) {
+    t_vec3 CO = vec3_sub(O, sphere.center);
+    double a = vec3_dot(D, D);           // Always 1 for normalized D
+    double b = 2 * vec3_dot(CO, D);
+    double c = vec3_dot(CO, CO) - sphere.radius * sphere.radius;
+    double discriminant = b * b - 4 * a * c;
+
+    if (discriminant < 0) {
+        *t1 = *t2 = DBL_MAX;  // No intersection
+        return;
+    }
+
+    *t1 = (-b + sqrt(discriminant)) / (2 * a);
+    *t2 = (-b - sqrt(discriminant)) / (2 * a);
+}
+```
+
+#### Normal Calculation
+The surface normal at intersection point P is:
+N = (P - C) / ||P - C|| = (P - C) / r
+
+### Cylinder Intersection
+
+#### Infinite Cylinder
+For a cylinder with axis A (normalized) and radius r, the intersection is found by solving a quadratic equation in the plane perpendicular to the axis.
+
+**Algorithm:**
+1. Project ray origin and direction onto cylinder axis
+2. Find perpendicular components
+3. Solve quadratic equation for infinite cylinder
+4. Check height constraints
+5. Check end cap intersections
+
+#### Implementation Details
+```c
+void IntersectRayCylinder(t_vec3 O, t_vec3 D, t_cylinder cylinder, double *t1, double *t2) {
+    t_vec3 CO = vec3_sub(O, cylinder.center);
+
+    // Project onto cylinder axis
+    double D_dot_axis = vec3_dot(D, cylinder.axis);
+    double CO_dot_axis = vec3_dot(CO, cylinder.axis);
+
+    // Perpendicular components
+    t_vec3 D_perp = vec3_sub(D, vec3_scale(cylinder.axis, D_dot_axis));
+    t_vec3 CO_perp = vec3_sub(CO, vec3_scale(cylinder.axis, CO_dot_axis));
+
+    // Quadratic equation coefficients
+    double a = vec3_dot(D_perp, D_perp);
+    double b = 2 * vec3_dot(D_perp, CO_perp);
+    double c = vec3_dot(CO_perp, CO_perp) - cylinder.radius * cylinder.radius;
+
+    // Solve quadratic equation...
+    // Check height constraints...
+    // Check end caps...
+}
+```
+
+#### End Cap Intersection
+For end caps at positions ±h/2 along the axis:
+1. Intersect ray with planes at cap positions
+2. Check if intersection point is within cylinder radius
+3. Calculate proper surface normals
+
+### Plane Intersection
+
+#### Mathematical Derivation
+For a plane with normal N and point P₀, the plane equation is:
+N · (P - P₀) = 0
+
+Intersecting with ray P(t) = O + tD:
+N · (O + tD - P₀) = 0
+N · (O - P₀) + t(N · D) = 0
+
+Solving for t:
+t = N · (P₀ - O) / (N · D)
+
+#### Implementation
+```c
+void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t) {
+    double denom = vec3_dot(D, plane.normal);
+
+    if (ft_fabs(denom) < 1e-6) {
+        *t = DBL_MAX;  // Ray parallel to plane
+        return;
+    }
+
+    t_vec3 to_plane = vec3_sub(plane.point, O);
+    *t = vec3_dot(to_plane, plane.normal) / denom;
+
+    if (*t < 0) {
+        *t = DBL_MAX;  // Intersection behind ray origin
+    }
+}
+```
+
+## 💡 Lighting Model
+
+### Phong Lighting Model
+
+The lighting calculation combines three components:
+
+#### 1. Ambient Lighting
+Provides base illumination to prevent completely dark areas:
+```
+I_ambient = k_a × I_a
+```
+Where:
+- k_a = material ambient coefficient
+- I_a = ambient light intensity
+
+#### 2. Diffuse Lighting (Lambertian Reflection)
+Models matte surfaces that scatter light equally in all directions:
+```
+I_diffuse = k_d × I_l × max(0, N · L)
+```
+Where:
+- k_d = material diffuse coefficient
+- I_l = light intensity
+- N = surface normal
+- L = light direction
+
+#### 3. Specular Lighting (Blinn-Phong)
+Models shiny surfaces with specular highlights:
+```
+I_specular = k_s × I_l × max(0, N · H)^shininess
+```
+Where:
+- k_s = material specular coefficient
+- H = half-vector = normalize(V + L)
+- V = view direction
+- shininess = material shininess exponent
+
+#### Implementation
+```c
+t_color calculate_lighting(t_vec3 hit_point, t_vec3 normal, t_vec3 view_direction,
+                          t_material material, t_ambient_light ambient,
+                          t_point_light *lights, int num_lights, ...) {
+    t_color final_color = {0, 0, 0};
+
+    // Ambient component
+    t_color ambient_color = color_multiply(material.color, ambient.color);
+    ambient_color = color_scale(ambient_color, material.ambient * ambient.intensity);
+    final_color = color_add(final_color, ambient_color);
+
+    // For each light source
+    for (int i = 0; i < num_lights; i++) {
+        t_point_light light = lights[i];
+        t_vec3 light_direction = vec3_normalize(vec3_sub(light.position, hit_point));
+
+        // Check shadows
+        if (is_in_shadow(hit_point, light_direction, ...)) {
+            continue;
+        }
+
+        // Diffuse component
+        double diffuse_factor = vec3_dot(normal, light_direction);
+        if (diffuse_factor > 0) {
+            t_color diffuse_color = color_multiply(material.color, light.color);
+            diffuse_color = color_scale(diffuse_color,
+                material.diffuse * diffuse_factor * light.intensity);
+            final_color = color_add(final_color, diffuse_color);
+        }
+
+        // Specular component (Blinn-Phong)
+        t_vec3 half_vector = vec3_normalize(vec3_add(view_direction, light_direction));
+        double specular_factor = vec3_dot(normal, half_vector);
+        if (specular_factor > 0) {
+            specular_factor = pow(specular_factor, material.shininess);
+            t_color specular_color = color_multiply(material.color, light.color);
+            specular_color = color_scale(specular_color,
+                material.specular * specular_factor * light.intensity);
+            final_color = color_add(final_color, specular_color);
+        }
+    }
+
+    return color_clamp(final_color);
+}
+```
+
+## 🎥 Camera System
+
+### Perspective Camera
+
+The camera is defined by:
+- **Position**: Camera location in 3D space
+- **Direction**: View direction (normalized)
+- **Field of View**: Horizontal angle of view
+
+#### View Plane Setup
+```c
+typedef struct s_camera_view {
+    t_vec3 pixel00;        // Top-left pixel position
+    t_vec3 pixel_delta_u;  // Horizontal pixel spacing
+    t_vec3 pixel_delta_v;  // Vertical pixel spacing
+} t_camera_view;
+```
+
+#### Camera Setup Algorithm
+1. Calculate view plane dimensions based on FOV
+2. Determine view plane orientation
+3. Calculate pixel grid parameters
+4. Set up ray generation parameters
+
+```c
+t_camera_view setup_camera(t_camera camera, int image_width, int image_height) {
+    t_camera_view view;
+
+    // Calculate view plane dimensions
+    double viewport_height = 2.0 * tan(camera.fov / 2.0);
+    double viewport_width = viewport_height * (image_width / (double)image_height);
+
+    // Calculate view plane vectors
+    t_vec3 viewport_u = vec3_scale(vec3_create(viewport_width, 0, 0), 1.0);
+    t_vec3 viewport_v = vec3_scale(vec3_create(0, -viewport_height, 0), 1.0);
+
+    // Calculate pixel deltas
+    view.pixel_delta_u = vec3_scale(viewport_u, 1.0 / image_width);
+    view.pixel_delta_v = vec3_scale(viewport_v, 1.0 / image_height);
+
+    // Calculate top-left pixel position
+    t_vec3 viewport_upper_left = vec3_sub(camera.P,
+        vec3_scale(camera.D, 1.0));
+    viewport_upper_left = vec3_sub(viewport_upper_left,
+        vec3_scale(viewport_u, 0.5));
+    viewport_upper_left = vec3_sub(viewport_upper_left,
+        vec3_scale(viewport_v, 0.5));
+
+    view.pixel00 = vec3_add(viewport_upper_left,
+        vec3_scale(vec3_add(view.pixel_delta_u, view.pixel_delta_v), 0.5));
+
+    return view;
+}
+```
+
+## 🎨 Color System
+
+### RGB Color Representation
+Colors are represented as RGB triplets with values 0-255:
+
+```c
+typedef struct s_color {
+    int r, g, b;
+} t_color;
+```
+
+### Color Operations
+
+#### Color Multiplication (Component-wise)
+```c
+t_color color_multiply(t_color a, t_color b) {
+    return (t_color){
+        (a.r * b.r) / 255,
+        (a.g * b.g) / 255,
+        (a.b * b.b) / 255
+    };
+}
+```
+
+#### Color Scaling
+```c
+t_color color_scale(t_color color, double factor) {
+    return (t_color){
+        (int)(color.r * factor),
+        (int)(color.g * factor),
+        (int)(color.b * factor)
+    };
+}
+```
+
+#### Color Addition
+```c
+t_color color_add(t_color a, t_color b) {
+    return (t_color){
+        a.r + b.r,
+        a.g + b.g,
+        a.b + b.b
+    };
+}
+```
+
+#### Color Clamping
+```c
+t_color color_clamp(t_color color) {
+    return (t_color){
+        (color.r > 255) ? 255 : (color.r < 0) ? 0 : color.r,
+        (color.g > 255) ? 255 : (color.g < 0) ? 0 : color.g,
+        (color.b > 255) ? 255 : (color.b < 0) ? 0 : color.b
+    };
+}
+```
+
+## 🌑 Shadow Casting
+
+### Shadow Ray Algorithm
+For each light source, cast a ray from the hit point toward the light:
+
+1. **Shadow ray setup**: origin = hit_point, direction = light_direction
+2. **Intersection testing**: Check all objects for intersection
+3. **Distance comparison**: If intersection distance < light distance, point is in shadow
+4. **Epsilon offset**: Use small offset to prevent self-shadowing
+
+```c
+int is_in_shadow(t_vec3 hit_point, t_vec3 light_direction, double light_distance, ...) {
+    t_vec3 shadow_ray_origin = hit_point;
+    t_vec3 shadow_ray_direction = light_direction;
+
+    // Check all objects for intersection
+    for (int i = 0; i < num_spheres; i++) {
+        double t1, t2;
+        IntersectRaySphere(shadow_ray_origin, shadow_ray_direction, spheres[i], &t1, &t2);
+        if (t1 > 0.001 && t1 < light_distance) return 1;  // In shadow
+        if (t2 > 0.001 && t2 < light_distance) return 1;  // In shadow
+    }
+
+    // Similar checks for cylinders and planes...
+
+    return 0;  // Not in shadow
+}
+```
+
+## ⚡ Performance Optimizations
+
+### Early Termination
+Stop intersection testing when the closest object is found:
+```c
+if (t1 >= t_min && t1 <= t_max && t1 < closest_t) {
+    closest_t = t1;
+    closest_object = &objects[i];
+}
+```
+
+### Shadow Ray Optimization
+- Use small epsilon (0.001) for shadow ray origins to prevent self-shadowing
+- Early termination when any intersection is found
+- Skip shadow testing for very distant lights
+
+### Memory Management
+- Use stack allocation for temporary calculations
+- Minimize dynamic allocation during rendering
+- Proper cleanup of scene objects
+
+## 🔧 MLX Integration
+
+### Window Management
+```c
+// Initialize MLX
+mlx_ptr = mlx_init();
+win_ptr = mlx_new_window(mlx_ptr, width, height, "Ray Tracer");
+
+// Set up event hooks
+mlx_key_hook(win_ptr, key_hook, NULL);
+mlx_hook(win_ptr, 17, 0, close_hook, NULL);  // Close button event
+```
+
+### Pixel Drawing
+```c
+// Convert color to MLX format
+int color_to_mlx(t_color color) {
+    return (color.r << 16) | (color.g << 8) | color.b;
+}
+
+// Draw pixel
+mlx_pixel_put(mlx_ptr, win_ptr, x, y, mlx_color);
+```
+
+### Event Handling
+```c
+int key_hook(int keycode, void *param) {
+    if (keycode == 65307) {  // ESC key
+        mlx_destroy_window(mlx_ptr, win_ptr);
+        mlx_destroy_display(mlx_ptr);
+        free(mlx_ptr);
+        exit(0);
+    }
+    return 0;
+}
+```
+
+## 📊 Algorithm Complexity
+
+### Time Complexity
+- **Ray-object intersection**: O(n) where n = number of objects
+- **Shadow casting**: O(n × m) where m = number of lights
+- **Overall rendering**: O(width × height × n × m)
+
+### Space Complexity
+- **Scene objects**: O(n) for object storage
+- **Rendering**: O(1) per pixel (no frame buffer storage)
+- **Temporary calculations**: O(1) stack space
+
+## 🧪 Testing and Validation
+
+### Mathematical Validation
+- **Sphere intersection**: Verified against analytical solutions
+- **Cylinder intersection**: Tested with known intersection points
+- **Plane intersection**: Validated with geometric calculations
+- **Lighting model**: Compared with reference implementations
+
+### Visual Validation
+- **Shadow accuracy**: Verified shadow positions and shapes
+- **Material appearance**: Confirmed lighting model behavior
+- **Color accuracy**: Tested color mixing and clamping
+- **Geometric accuracy**: Validated object shapes and positions
+
+## 🔍 Debugging Techniques
+
+### Intersection Debugging
+```c
+// Add debug output for intersection testing
+printf("Ray: origin(%.2f,%.2f,%.2f) dir(%.2f,%.2f,%.2f)\n",
+       O.x, O.y, O.z, D.x, D.y, D.z);
+printf("Sphere: center(%.2f,%.2f,%.2f) radius=%.2f\n",
+       sphere.center.x, sphere.center.y, sphere.center.z, sphere.radius);
+printf("Intersection: t1=%.4f t2=%.4f\n", t1, t2);
+```
+
+### Lighting Debugging
+```c
+// Debug lighting calculations
+printf("Hit point: (%.2f,%.2f,%.2f)\n", hit_point.x, hit_point.y, hit_point.z);
+printf("Normal: (%.2f,%.2f,%.2f)\n", normal.x, normal.y, normal.z);
+printf("Light direction: (%.2f,%.2f,%.2f)\n", light_direction.x, light_direction.y, light_direction.z);
+printf("Diffuse factor: %.4f\n", diffuse_factor);
+```
+
+### Color Debugging
+```c
+// Debug color values
+printf("Material color: (%d,%d,%d)\n", material.color.r, material.color.g, material.color.b);
+printf("Final color: (%d,%d,%d)\n", final_color.r, final_color.g, final_color.b);
+```
+
+This technical documentation provides the mathematical foundations and implementation details necessary for understanding and extending the ray tracer implementation.
