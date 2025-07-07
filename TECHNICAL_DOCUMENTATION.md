@@ -548,4 +548,13 @@ printf("Material color: (%d,%d,%d)\n", material.color.r, material.color.g, mater
 printf("Final color: (%d,%d,%d)\n", final_color.r, final_color.g, final_color.b);
 ```
 
+## 🏗️ Build and Executables
+
+By default, only the main ray tracer executable (`rt`) is built. To build the box scene (`rt_box`) or pipe scene (`rt_pipe`), uncomment the relevant lines in the Makefile and run:
+
+```bash
+make rt_box
+make rt_pipe
+```
+
 This technical documentation provides the mathematical foundations and implementation details necessary for understanding and extending the ray tracer implementation.

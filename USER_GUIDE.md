@@ -18,8 +18,13 @@ cd rt_in_one_weekend
 # Build the project
 make
 
+# By default, only the main ray tracer (./rt) is built.
+# To build the box scene or pipe scene executables, edit the Makefile to uncomment the relevant lines, then run:
+make rt_box
+make rt_pipe
+
 # Verify installation
-ls -la rt rt_box
+ls -la rt rt_box rt_pipe
 ```
 
 ### Running the Demos
@@ -27,10 +32,13 @@ ls -la rt rt_box
 # Run the main scene (spheres with lighting)
 ./rt
 
-# Run the box scene (complex scene with multiple objects)
+# Run the box scene (if built)
 ./rt_box
 
-# Run both scenes sequentially
+# Run the pipe scene (if built)
+./rt_pipe
+
+# Run all scenes sequentially (if all are built)
 ./run_scenes.sh
 ```
 

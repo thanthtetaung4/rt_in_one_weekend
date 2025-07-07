@@ -58,6 +58,9 @@ The box scene creates a closed environment with:
 ### Compilation
 ```bash
 make clean && make
+# By default, only the main ray tracer (./rt) is built.
+# To build the box scene executable, uncomment the relevant line in the Makefile and run:
+make rt_box
 ```
 
 ### Running the Scene

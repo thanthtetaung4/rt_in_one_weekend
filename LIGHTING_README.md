@@ -76,6 +76,10 @@ The ray tracer implements **hard shadows** by casting shadow rays from hit point
 3. If an intersection is found, the point is in shadow for that light
 4. Only ambient lighting contributes to shadowed areas
 
+## Scene and Lighting Management
+
+Lighting and material properties are managed centrally through the `t_scene` structure, which contains all lights, objects, and global settings for each scene. This ensures consistent lighting calculations and easy scene setup.
+
 ## Example Usage
 
 ### Setting up Materials

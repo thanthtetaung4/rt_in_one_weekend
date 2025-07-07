@@ -67,6 +67,9 @@ The pipe scene creates an immersive experience where:
 ### Compilation
 ```bash
 make clean && make
+# By default, only the main ray tracer (./rt) is built.
+# To build the pipe scene executable, uncomment the relevant line in the Makefile and run:
+make rt_pipe
 ```
 
 ### Running the Scene

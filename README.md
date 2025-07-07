@@ -55,12 +55,16 @@ rt_in_one_weekend/
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd rt_in_one_weekend
+   cd rt_in_one_weekend-main
    ```
 
 2. **Build the project:**
    ```bash
    make
+   # By default, only the main ray tracer (./rt) is built.
+   # To build the box scene or pipe scene executables, edit the Makefile to uncomment the relevant lines, then run:
+   make rt_box
+   make rt_pipe
    ```
 
 3. **Run the demos:**
@@ -68,10 +72,13 @@ rt_in_one_weekend/
    # Run the main scene
    ./rt
 
-   # Run the box scene
+   # Run the box scene (if built)
    ./rt_box
 
-   # Run both scenes
+   # Run the pipe scene (if built)
+   ./rt_pipe
+
+   # Run both scenes (if all are built)
    ./run_scenes.sh
    ```
 

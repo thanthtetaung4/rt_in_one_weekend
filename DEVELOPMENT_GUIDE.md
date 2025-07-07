@@ -99,12 +99,12 @@ gcc --version  # Should be 7.0 or higher
 The project uses a custom Makefile with the following targets:
 
 ```bash
-# Build all executables
+# Build the main ray tracer (default)
 make
 
-# Build specific executable
-make rt        # Main ray tracer
-make rt_box    # Box scene demo
+# To build the box scene or pipe scene executables, uncomment the relevant lines in the Makefile and run:
+make rt_box
+make rt_pipe
 
 # Clean build artifacts
 make clean     # Remove object files
@@ -115,12 +115,13 @@ make re        # Clean and rebuild
 ```
 
 ### Development Workflow
-1. **Clone and setup**: `git clone <repo> && cd rt_in_one_weekend`
-2. **Build**: `make`
-3. **Test**: `./rt` and `./rt_box`
-4. **Modify**: Edit source files
-5. **Rebuild**: `make re`
-6. **Test changes**: Run executables
+1. **Clone and setup**: `git clone <repo> && cd rt_in_one_weekend-main`
+2. **Build**: `make` (only builds ./rt by default)
+3. **To build other scenes**: Uncomment in Makefile, then `make rt_box` or `make rt_pipe`
+4. **Test**: `./rt`, `./rt_box`, or `./rt_pipe` (as available)
+5. **Modify**: Edit source files
+6. **Rebuild**: `make re`
+7. **Test changes**: Run executables
 
 ## 📝 Coding Standards
 
