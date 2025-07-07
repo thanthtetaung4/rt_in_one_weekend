@@ -37,23 +37,3 @@ static void	render_scene_internal(FILE *f, t_scene *scene,
 		y++;
 	}
 }
-
-void	render_scene(FILE *f, t_scene *scene)
-{
-	render_scene_internal(f, scene, TraceRay);
-}
-
-void	render_scene_with_cylinders(FILE *f, t_scene *scene)
-{
-	render_scene_internal(f, scene, TraceRayWithCylinders);
-}
-
-void	render_scene_with_planes(FILE *f, t_scene *scene)
-{
-	render_scene_internal(f, scene, TraceRayWithPlanes);
-}
-
-void	render_scene_with_lighting(FILE *f, t_scene *scene)
-{
-	render_scene_internal(f, scene, TraceRayWithLighting);
-}

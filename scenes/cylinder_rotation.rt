@@ -1,0 +1,7 @@
+R 800 600
+A 0.2 255,255,255
+C 0,0,-5 0,0,1 60                # Camera facing +z
+L 0,0,-5 0.8 255,255,255
+
+# Cylinder at origin, rotated to lie along X-axis
+cy 0,0,0 0.5,0.5,0.5 1.0 3.0 0,0,255

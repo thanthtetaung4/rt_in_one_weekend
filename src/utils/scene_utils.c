@@ -1,4 +1,5 @@
 #include "../../inc/rt.h"
+#include <string.h>
 
 t_scene	*create_scene(void)
 {
@@ -51,441 +52,127 @@ void	free_scene(t_scene *scene)
 	free(scene);
 }
 
-static t_material	create_red_material(void)
-{
-	return ((t_material){
-		.color = {255, 0, 0},
-		.ambient = 0.2,
-		.diffuse = 0.7,
-		.specular = 0.3,
-		.shininess = 50
-	});
+static t_color parse_color(const char *str) {
+	t_color color = {0, 0, 0};
+	sscanf(str, "%d,%d,%d", &color.r, &color.g, &color.b);
+	return color;
 }
 
-static t_material	create_blue_material(void)
-{
-	return ((t_material){
-		.color = {0, 0, 255},
-		.ambient = 0.2,
-		.diffuse = 0.8,
-		.specular = 0.5,
-		.shininess = 100
-	});
+static t_vec3 parse_vec3(const char *str) {
+	t_vec3 v = {0, 0, 0};
+	sscanf(str, "%lf,%lf,%lf", &v.x, &v.y, &v.z);
+	return v;
 }
 
-static t_material	create_green_material(void)
-{
-	return ((t_material){
-		.color = {0, 255, 0},
-		.ambient = 0.2,
-		.diffuse = 0.6,
-		.specular = 0.4,
-		.shininess = 30
-	});
+static void parse_material(const char *str, t_material *mat) {
+	mat->ambient = 0.1;
+	mat->diffuse = 0.7;
+	mat->specular = 0.2;
+	mat->shininess = 20;
+	const char *spc = strstr(str, "spc:");
+	if (spc) {
+		sscanf(spc + 4, "%lf,%lf", &mat->specular, &mat->shininess);
+	}
+	const char *mir = strstr(str, "mir:");
+	if (mir) {
+		sscanf(mir + 4, "%lf", &mat->ambient);
+	}
 }
 
-static t_material	create_yellow_material(void)
-{
-	return ((t_material){
-		.color = {255, 255, 0},
-		.ambient = 0.3,
-		.diffuse = 0.5,
-		.specular = 0.2,
-		.shininess = 10
-	});
-}
-
-static t_material	create_magenta_material(void)
-{
-	return ((t_material){
-		.color = {255, 0, 255},
-		.ambient = 0.2,
-		.diffuse = 0.7,
-		.specular = 0.6,
-		.shininess = 80
-	});
-}
-
-static t_material	create_cyan_material(void)
-{
-	return ((t_material){
-		.color = {0, 255, 255},
-		.ambient = 0.2,
-		.diffuse = 0.6,
-		.specular = 0.4,
-		.shininess = 40
-	});
-}
-
-static void	setup_camera_regular(t_scene *scene)
-{
-	scene->camera = (t_camera){
-		.P = vec3_create(0, 0, -1),
-		.D = vec3_create(0, 0, 1),
-		.fov = PI / 4
-	};
-}
-
-static void	setup_spheres_regular(t_scene *scene)
-{
-	t_material	red_material;
-	t_material	blue_material;
-	t_material	green_material;
-	t_material	yellow_material;
-
-	red_material = create_red_material();
-	blue_material = create_blue_material();
-	green_material = create_green_material();
-	yellow_material = create_yellow_material();
-	scene->num_spheres = 4;
-	scene->spheres = malloc(scene->num_spheres * sizeof(t_sphere));
-	scene->spheres[0] = (t_sphere){.center = {0, -1, 3}, .radius = 1, .material = red_material};
-	scene->spheres[1] = (t_sphere){.center = {2, 2, 4}, .radius = 1, .material = blue_material};
-	scene->spheres[2] = (t_sphere){.center = {-2, 3, 4}, .radius = 1, .material = green_material};
-	scene->spheres[3] = (t_sphere){.center = {0, -5001, 0}, .radius = 5000, .material = yellow_material};
-}
-
-static void	setup_cylinders_regular(t_scene *scene)
-{
-	t_material	magenta_material;
-	t_material	cyan_material;
-
-	magenta_material = create_magenta_material();
-	cyan_material = create_cyan_material();
-	scene->num_cylinders = 2;
-	scene->cylinders = malloc(scene->num_cylinders * sizeof(t_cylinder));
-	scene->cylinders[0] = (t_cylinder){
-		.center = {0, 0, 5},
-		.axis = vec3_normalize(vec3_create(0, 1, 0)),
-		.radius = 0.5,
-		.height = 2.0,
-		.material = magenta_material
-	};
-	scene->cylinders[1] = (t_cylinder){
-		.center = {3, 0, 4},
-		.axis = vec3_normalize(vec3_create(1, 0, 0)),
-		.radius = 0.3,
-		.height = 1.5,
-		.material = cyan_material
-	};
-}
-
-static void	setup_planes_regular(t_scene *scene)
-{
-	t_material	cyan_material;
-
-	cyan_material = create_cyan_material();
-	scene->num_planes = 1;
-	scene->planes = malloc(scene->num_planes * sizeof(t_plane));
-	scene->planes[0] = (t_plane){
-		.point = {0, 0, 8},
-		.normal = vec3_normalize(vec3_create(0, 0, -1)),
-		.material = cyan_material
-	};
-}
-
-static void	setup_lighting_regular(t_scene *scene)
-{
-	scene->ambient = (t_ambient_light){
-		.intensity = 0.3,
-		.color = {255, 255, 255}
-	};
-	scene->num_lights = 2;
-	scene->lights = malloc(scene->num_lights * sizeof(t_point_light));
-	scene->lights[0] = (t_point_light){
-		.position = {2, 3, -2},
-		.intensity = 1.0,
-		.color = {255, 255, 255}
-	};
-	scene->lights[1] = (t_point_light){
-		.position = {-2, 2, 2},
-		.intensity = 0.8,
-		.color = {255, 0, 0}
-	};
-}
-
-void	setup_regular_scene(t_scene *scene)
-{
-	if (!scene)
-		return ;
-	setup_camera_regular(scene);
-	setup_spheres_regular(scene);
-	setup_cylinders_regular(scene);
-	setup_planes_regular(scene);
-	setup_lighting_regular(scene);
-}
-
-static t_material	create_black_material(void)
-{
-	return ((t_material){
-		.color = {20, 20, 20},
-		.ambient = 0.1,
-		.diffuse = 0.3,
-		.specular = 0.1,
-		.shininess = 10
-	});
-}
-
-static void	setup_camera_box(t_scene *scene)
-{
-	scene->camera = (t_camera){
-		.P = vec3_create(0, 0, -4),
-		.D = vec3_create(0, 0, 1),
-		.fov = PI / 3
-	};
-}
-
-static void	setup_spheres_box(t_scene *scene)
-{
-	t_material	red_material;
-	t_material	blue_material;
-	t_material	green_material;
-
-	red_material = create_red_material();
-	blue_material = create_blue_material();
-	green_material = create_green_material();
-	scene->num_spheres = 3;
-	scene->spheres = malloc(scene->num_spheres * sizeof(t_sphere));
-	scene->spheres[0] = (t_sphere){
-		.center = {0, 0, 2},
-		.radius = 0.8,
-		.material = red_material
-	};
-	scene->spheres[1] = (t_sphere){
-		.center = {-1.5, 0, 1},
-		.radius = 0.6,
-		.material = blue_material
-	};
-	scene->spheres[2] = (t_sphere){
-		.center = {1.5, 0, 1},
-		.radius = 0.6,
-		.material = green_material
-	};
-}
-
-static void	setup_cylinders_box(t_scene *scene)
-{
-	t_material	yellow_material;
-
-	yellow_material = create_yellow_material();
-	scene->num_cylinders = 2;
-	scene->cylinders = malloc(scene->num_cylinders * sizeof(t_cylinder));
-	scene->cylinders[0] = (t_cylinder){
-		.center = {0, -0.5, 0},
-		.axis = vec3_normalize(vec3_create(0, 1, 0)),
-		.radius = 0.4,
-		.height = 1.5,
-		.material = yellow_material
-	};
-	scene->cylinders[1] = (t_cylinder){
-		.center = {0, 0.5, 0},
-		.axis = vec3_normalize(vec3_create(1, 0, 0)),
-		.radius = 0.3,
-		.height = 2.0,
-		.material = yellow_material
-	};
-}
-
-static void	setup_planes_box(t_scene *scene)
-{
-	t_material	black_material;
-
-	black_material = create_black_material();
-	scene->num_planes = 4;
-	scene->planes = malloc(scene->num_planes * sizeof(t_plane));
-	scene->planes[0] = (t_plane){
-		.point = {-3, 0, 0},
-		.normal = vec3_normalize(vec3_create(1, 0, 0)),
-		.material = black_material
-	};
-	scene->planes[1] = (t_plane){
-		.point = {3, 0, 0},
-		.normal = vec3_normalize(vec3_create(-1, 0, 0)),
-		.material = black_material
-	};
-	scene->planes[2] = (t_plane){
-		.point = {0, 3, 0},
-		.normal = vec3_normalize(vec3_create(0, -1, 0)),
-		.material = black_material
-	};
-	scene->planes[3] = (t_plane){
-		.point = {0, -3, 0},
-		.normal = vec3_normalize(vec3_create(0, 1, 0)),
-		.material = black_material
-	};
-}
-
-static void	setup_lighting_box(t_scene *scene)
-{
-	scene->ambient = (t_ambient_light){
-		.intensity = 0.2,
-		.color = {255, 255, 255}
-	};
-	scene->num_lights = 2;
-	scene->lights = malloc(scene->num_lights * sizeof(t_point_light));
-	scene->lights[0] = (t_point_light){
-		.position = {0, 2, -2},
-		.intensity = 1.0,
-		.color = {255, 255, 255}
-	};
-	scene->lights[1] = (t_point_light){
-		.position = {2, 0, 2},
-		.intensity = 0.8,
-		.color = {255, 255, 255}
-	};
-}
-
-void	setup_box_scene(t_scene *scene)
-{
-	if (!scene)
-		return ;
-	setup_camera_box(scene);
-	setup_spheres_box(scene);
-	setup_cylinders_box(scene);
-	setup_planes_box(scene);
-	setup_lighting_box(scene);
-}
-
-static t_material	create_pipe_material(void)
-{
-	return ((t_material){
-		.color = {100, 100, 100},
-		.ambient = 0.3,
-		.diffuse = 0.5,
-		.specular = 0.2,
-		.shininess = 20
-	});
-}
-
-static t_material	create_purple_material(void)
-{
-	return ((t_material){
-		.color = {128, 0, 128},
-		.ambient = 0.2,
-		.diffuse = 0.6,
-		.specular = 0.4,
-		.shininess = 40
-	});
-}
-
-static void	setup_camera_pipe(t_scene *scene)
-{
-	scene->camera = (t_camera){
-		.P = vec3_create(0, 0, 0),
-		.D = vec3_create(0, 0, 1),
-		.fov = PI / 4
-	};
-}
-
-static void	setup_spheres_pipe(t_scene *scene)
-{
-	t_material	red_material;
-	t_material	blue_material;
-	t_material	green_material;
-	t_material	yellow_material;
-	t_material	purple_material;
-
-	red_material = create_red_material();
-	blue_material = create_blue_material();
-	green_material = create_green_material();
-	yellow_material = create_yellow_material();
-	purple_material = create_purple_material();
-	scene->num_spheres = 5;
-	scene->spheres = malloc(scene->num_spheres * sizeof(t_sphere));
-	scene->spheres[0] = (t_sphere){
-		.center = {1.5, 1.0, 3},
-		.radius = 0.4,
-		.material = red_material
-	};
-	scene->spheres[1] = (t_sphere){
-		.center = {-1.2, 0.8, 5},
-		.radius = 0.3,
-		.material = blue_material
-	};
-	scene->spheres[2] = (t_sphere){
-		.center = {0.8, -1.5, 7},
-		.radius = 0.5,
-		.material = green_material
-	};
-	scene->spheres[3] = (t_sphere){
-		.center = {-0.5, -0.8, 9},
-		.radius = 0.2,
-		.material = yellow_material
-	};
-	scene->spheres[4] = (t_sphere){
-		.center = {2.0, -0.3, 11},
-		.radius = 0.35,
-		.material = purple_material
-	};
-}
-
-static void	setup_cylinders_pipe(t_scene *scene)
-{
-	t_material	pipe_material;
-	t_material	yellow_material;
-	t_material	purple_material;
-
-	pipe_material = create_pipe_material();
-	yellow_material = create_yellow_material();
-	purple_material = create_purple_material();
-	scene->num_cylinders = 3;
-	scene->cylinders = malloc(scene->num_cylinders * sizeof(t_cylinder));
-	scene->cylinders[0] = (t_cylinder){
-		.center = {0, 0, 0},
-		.axis = vec3_normalize(vec3_create(0, 0, 1)),
-		.radius = 2.0,
-		.height = 100.0,
-		.material = pipe_material
-	};
-	scene->cylinders[1] = (t_cylinder){
-		.center = {0.5, 1.8, 4},
-		.axis = vec3_normalize(vec3_create(1, 0, 0)),
-		.radius = 0.2,
-		.height = 0.8,
-		.material = yellow_material
-	};
-	scene->cylinders[2] = (t_cylinder){
-		.center = {-1.8, -0.5, 6},
-		.axis = vec3_normalize(vec3_create(0, 1, 0)),
-		.radius = 0.15,
-		.height = 0.6,
-		.material = purple_material
-	};
-}
-
-static void	setup_lighting_pipe(t_scene *scene)
-{
-	scene->ambient = (t_ambient_light){
-		.intensity = 0.4,
-		.color = {255, 255, 255}
-	};
-	scene->num_lights = 3;
-	scene->lights = malloc(scene->num_lights * sizeof(t_point_light));
-	scene->lights[0] = (t_point_light){
-		.position = {0, 0, -2},
-		.intensity = 1.0,
-		.color = {255, 255, 255}
-	};
-	scene->lights[1] = (t_point_light){
-		.position = {2, 2, 8},
-		.intensity = 0.8,
-		.color = {255, 255, 255}
-	};
-	scene->lights[2] = (t_point_light){
-		.position = {-2, -2, 12},
-		.intensity = 0.6,
-		.color = {255, 200, 200}
-	};
-}
-
-void	setup_pipe_scene(t_scene *scene)
-{
-	if (!scene)
-		return ;
-	setup_camera_pipe(scene);
-	setup_spheres_pipe(scene);
-	setup_cylinders_pipe(scene);
+int parse_rt_file(const char *filename, t_scene *scene) {
+	FILE *f = fopen(filename, "r");
+	if (!f) {
+		printf("Error: Could not open %s\n", filename);
+		return 0;
+	}
+	char line[256];
+	int sphere_cap = 16, plane_cap = 16, light_cap = 8, cylinder_cap = 16;
+	scene->spheres = malloc(sphere_cap * sizeof(t_sphere));
+	scene->planes = malloc(plane_cap * sizeof(t_plane));
+	scene->lights = malloc(light_cap * sizeof(t_point_light));
+	scene->cylinders = malloc(cylinder_cap * sizeof(t_cylinder));
+	scene->num_spheres = 0;
 	scene->num_planes = 0;
-	scene->planes = NULL;
-	setup_lighting_pipe(scene);
+	scene->num_lights = 0;
+	scene->num_cylinders = 0;
+	while (fgets(line, sizeof(line), f)) {
+		char *p = line;
+		while (*p == ' ' || *p == '\t') p++;
+		if (*p == '\0' || *p == '\n' || *p == '#') continue;
+		if (strncmp(p, "R", 1) == 0) {
+			int w, h;
+			sscanf(p + 1, "%d %d", &w, &h);
+			scene->width = w;
+			scene->height = h;
+		} else if (strncmp(p, "A", 1) == 0) {
+			double intensity; char colorstr[32];
+			sscanf(p + 1, "%lf %31s", &intensity, colorstr);
+			scene->ambient.intensity = intensity;
+			scene->ambient.color = parse_color(colorstr);
+		} else if (strncmp(p, "C", 1) == 0) {
+			char pos[32], dir[32]; double fov;
+			sscanf(p + 1, "%31s %31s %lf", pos, dir, &fov);
+			scene->camera.P = parse_vec3(pos);
+			scene->camera.D = parse_vec3(dir);
+			scene->camera.fov = fov * (PI / 180.0);
+		} else if (strncmp(p, "L", 1) == 0) {
+			char pos[32], colorstr[32]; double intensity;
+			sscanf(p + 1, "%31s %lf %31s", pos, &intensity, colorstr);
+			if (scene->num_lights >= light_cap) {
+				light_cap *= 2;
+				scene->lights = realloc(scene->lights, light_cap * sizeof(t_point_light));
+			}
+			scene->lights[scene->num_lights].position = parse_vec3(pos);
+			scene->lights[scene->num_lights].intensity = intensity;
+			scene->lights[scene->num_lights].color = parse_color(colorstr);
+			scene->num_lights++;
+		} else if (strncmp(p, "pl", 2) == 0) {
+			char point[32], normal[32], colorstr[32], matstr[64];
+			int n = sscanf(p + 2, "%31s %31s %31s %63[^\n]", point, normal, colorstr, matstr);
+			if (scene->num_planes >= plane_cap) {
+				plane_cap *= 2;
+				scene->planes = realloc(scene->planes, plane_cap * sizeof(t_plane));
+			}
+			scene->planes[scene->num_planes].point = parse_vec3(point);
+			scene->planes[scene->num_planes].normal = parse_vec3(normal);
+			scene->planes[scene->num_planes].material.color = parse_color(colorstr);
+			parse_material(matstr, &scene->planes[scene->num_planes].material);
+			scene->num_planes++;
+		} else if (strncmp(p, "sp", 2) == 0) {
+			char center[32], colorstr[32], matstr[64];
+			double radius;
+			int n = sscanf(p + 2, "%31s %lf %31s %63[^\n]", center, &radius, colorstr, matstr);
+			if (scene->num_spheres >= sphere_cap) {
+				sphere_cap *= 2;
+				scene->spheres = realloc(scene->spheres, sphere_cap * sizeof(t_sphere));
+			}
+			scene->spheres[scene->num_spheres].center = parse_vec3(center);
+			scene->spheres[scene->num_spheres].radius = radius;
+			scene->spheres[scene->num_spheres].material.color = parse_color(colorstr);
+			parse_material(matstr, &scene->spheres[scene->num_spheres].material);
+			scene->num_spheres++;
+		} else if (strncmp(p, "cy", 2) == 0) {
+			char center[32], axis[32], colorstr[32], matstr[64];
+			double radius, height;
+			int n = sscanf(p + 2, "%31s %31s %lf %lf %31s %63[^\n]",
+				center, axis, &radius, &height, colorstr, matstr);
+			if (scene->num_cylinders >= cylinder_cap) {
+				cylinder_cap *= 2;
+				scene->cylinders = realloc(scene->cylinders,
+					cylinder_cap * sizeof(t_cylinder));
+			}
+			scene->cylinders[scene->num_cylinders].center = parse_vec3(center);
+			scene->cylinders[scene->num_cylinders].axis =
+				vec3_normalize(parse_vec3(axis));
+			scene->cylinders[scene->num_cylinders].radius = radius;
+			scene->cylinders[scene->num_cylinders].height = height;
+			scene->cylinders[scene->num_cylinders].material.color =
+				parse_color(colorstr);
+			parse_material(matstr,
+				&scene->cylinders[scene->num_cylinders].material);
+			scene->num_cylinders++;
+		}
+	}
+	fclose(f);
+	return 1;
 }

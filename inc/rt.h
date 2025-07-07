@@ -9,6 +9,7 @@
 # include "color.h"
 # include "ray.h"
 # include "ft_math.h"
+# include "../src/gnl/gnl.h"
 
 # define PI 3.14159265358979323846
 
@@ -116,7 +117,7 @@ void IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane, double *t);
 t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
 t_color TraceRayWithCylinders(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
 t_color TraceRayWithPlanes(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
-t_color TraceRayWithLighting(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
+t_color TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max, t_scene *scene);
 
 // Lighting functions
 t_color calculate_lighting(t_vec3 hit_point, t_vec3 normal, t_vec3 view_direction,
@@ -134,5 +135,7 @@ void render_scene(FILE *f, t_scene *scene);
 void render_scene_with_cylinders(FILE *f, t_scene *scene);
 void render_scene_with_planes(FILE *f, t_scene *scene);
 void render_scene_with_lighting(FILE *f, t_scene *scene);
+
+int parse_rt_file(const char *filename, t_scene *scene);
 
 # endif

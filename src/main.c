@@ -37,7 +37,7 @@ static void	render_to_mlx_image(void)
 					vec3_add(vec3_scale(view.pixel_delta_u, x),
 						vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
 			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
-			color = TraceRayWithLighting(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
+			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
 			mlx_color = color_to_mlx(color);
 			mlx_pixel_put(mlx_ptr, win_ptr, x, y, mlx_color);
 			x++;
@@ -68,7 +68,7 @@ static int	close_hook(void *param)
 	exit(0);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	mlx_ptr = mlx_init();
 	if (!mlx_ptr)
@@ -84,7 +84,14 @@ int	main(void)
 		free(mlx_ptr);
 		return (1);
 	}
-	setup_regular_scene(scene);
+	if (!parse_rt_file(argv[1], scene))
+	{
+		printf("Error: Failed to parse atom.rt\n");
+		free_scene(scene);
+		mlx_destroy_display(mlx_ptr);
+		free(mlx_ptr);
+		return (1);
+	}
 	win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height, "Ray Tracer");
 	if (!win_ptr)
 	{

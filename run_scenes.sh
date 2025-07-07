@@ -5,38 +5,39 @@ make clean && make
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "Build successful! Choose which scene to run:"
-    echo "1. Main scene (spheres, cylinders, plane with lighting)"
-    echo "2. Box scene (closed box with objects inside)"
-    echo "3. Pipe scene (camera inside infinite cylinder with floating objects)"
-    echo "4. Run all scenes (will open three windows)"
+    echo "Build successful! Choose how to run scenes:"
+    echo "1. Select a specific scene"
+    echo "2. Run all scenes"
     echo ""
     echo "Note: Press ESC key to close the windows"
     echo ""
 
-    read -p "Enter your choice (1, 2, 3, or 4): " choice
+    read -p "Enter your choice (1 or 2): " choice
 
     case $choice in
         1)
-            echo "Running main scene..."
-            ./rt
+            echo "Available scenes:"
+            ls -1 scenes/*.rt | nl
+            echo ""
+            read -p "Enter scene number: " scene_num
+            scene_file=$(ls scenes/*.rt | sed -n "${scene_num}p")
+            if [ -n "$scene_file" ]; then
+                echo "Running $scene_file..."
+                ./rt "$scene_file"
+            else
+                echo "Invalid scene number"
+                exit 1
+            fi
             ;;
         2)
-            echo "Running box scene..."
-            ./rt_box
-            ;;
-        3)
-            echo "Running pipe scene..."
-            ./rt_pipe
-            ;;
-        4)
             echo "Running all scenes..."
-            echo "Main scene will open first, then box scene, then pipe scene"
-            ./rt &
-            sleep 2
-            ./rt_box &
-            sleep 2
-            ./rt_pipe
+            echo "Scenes will open with 2 second intervals"
+            for scene in scenes/*.rt; do
+                echo "Running $scene..."
+                ./rt "$scene" &
+                sleep 2
+            done
+            wait
             ;;
         *)
             echo "Invalid choice. Exiting."

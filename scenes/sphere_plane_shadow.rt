@@ -1,0 +1,16 @@
+R 800 600
+
+# Camera is moved to the side (x=3), looking toward the origin (and toward Z)
+C 3,1,0 -1,-0.3,1 60
+
+# Ambient lighting low so shadows are more visible
+A 0.2 255,255,255
+
+# Spot light placed vertically above the sphere at (0, 3, 5), pointing down
+L 0,3,5 1.0 255,255,255
+
+# Sphere at (0, 0.4, 5), slightly above the plane to cast a shadow
+sp 0,0.4,5 0.4 255,0,0
+
+# Plane at y=0 (horizontal ground plane)
+pl 0,0,0 0,1,0 100,100,100

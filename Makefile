@@ -25,15 +25,16 @@ CFLAGS = #-Wall -Wextra -Werror
 DEFAULT = ./src
 UTILS = $(DEFAULT)/utils
 VEC3 = $(DEFAULT)/vec3
+GNL = $(DEFAULT)/gnl/gnl.c
 
-SRCS = $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
+SRCS = $(GNL) $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
 OBJS = $(SRCS:.c=.o)
 
-BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
-BOX_OBJS = $(BOX_SRCS:.c=.o)
+# BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
+# BOX_OBJS = $(BOX_SRCS:.c=.o)
 
-PIPE_SRCS = $(DEFAULT)/main_pipe.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
-PIPE_OBJS = $(PIPE_SRCS:.c=.o)
+# PIPE_SRCS = $(DEFAULT)/main_pipe.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
+# PIPE_OBJS = $(PIPE_SRCS:.c=.o)
 
 # Compiler
 CC = cc
@@ -44,7 +45,7 @@ BOX_NAME = rt_box
 PIPE_NAME = rt_pipe
 
 # Rules
-all: $(NAME) $(BOX_NAME) $(PIPE_NAME)
+all: $(NAME) #$(BOX_NAME) $(PIPE_NAME)
 	 @echo "\033[32m[$(NAME), $(BOX_NAME), and $(PIPE_NAME) are ready for use]\033[0m"
 
 $(NAME): $(MLX_LIB) $(OBJS)  $(LIBFT)

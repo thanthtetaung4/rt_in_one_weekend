@@ -38,7 +38,7 @@ static void	render_to_mlx_image(void)
 				vec3_add(vec3_scale(view.pixel_delta_u, x),
 					vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
 			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
-			color = TraceRayWithLighting(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
+			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
 			mlx_color = color_to_mlx(color);
 			mlx_pixel_put(mlx_ptr, win_ptr, x, y, mlx_color);
 			x++;
