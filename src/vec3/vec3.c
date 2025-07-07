@@ -3,7 +3,7 @@
 
 t_vec3	vec3_create(double x, double y, double z)
 {
-	return (t_vec3){x, y, z};
+	return ((t_vec3){x, y, z});
 }
 
 t_vec3	vec3_neg(t_vec3 v)
@@ -44,10 +44,10 @@ double	vec3_dot(t_vec3 a, t_vec3 b)
 t_vec3	vec3_cross(t_vec3 a, t_vec3 b)
 {
 	return (vec3_create(
-		a.y * b.z - a.z * b.y,
-		a.z * b.x - a.x * b.z,
-		a.x * b.y - a.y * b.x
-	));
+			a.y * b.z - a.z * b.y,
+			a.z * b.x - a.x * b.z,
+			a.x * b.y - a.y * b.x
+		));
 }
 
 double	vec3_length_squared(t_vec3 v)
@@ -60,10 +60,11 @@ double	vec3_length(t_vec3 v)
 	return (sqrt(vec3_length_squared(v)));
 }
 
-
 t_vec3	vec3_normalize(t_vec3 v)
 {
-	double	len = sqrt(vec3_dot(v, v));
+	double	len;
+
+	len = sqrt(vec3_dot(v, v));
 	return (vec3_div(v, len));
 }
 
