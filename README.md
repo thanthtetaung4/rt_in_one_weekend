@@ -172,6 +172,7 @@ t_scene *create_scene(void);
 void free_scene(t_scene *scene);
 void setup_regular_scene(t_scene *scene);
 void setup_box_scene(t_scene *scene);
+void setup_pipe_scene(t_scene *scene);
 ```
 
 ### Camera System
@@ -283,7 +284,8 @@ The project includes multiple test scenes:
 
 1. **Main Scene**: Basic sphere and lighting demonstration
 2. **Box Scene**: Complex scene with multiple primitives and lighting
-3. **Custom Scenes**: Easy scene creation and modification
+3. **Pipe Scene**: Immersive scene with camera inside infinite cylinder
+4. **Custom Scenes**: Easy scene creation and modification
 
 ### Visual Verification
 
@@ -296,6 +298,7 @@ The project includes multiple test scenes:
 
 - **[Lighting System](LIGHTING_README.md)**: Detailed lighting model documentation
 - **[Box Scene](BOX_SCENE_README.md)**: Box scene setup and configuration
+- **[Pipe Scene](PIPE_SCENE_README.md)**: Pipe scene with camera inside infinite cylinder
 - **[Cylinder and Plane](CYLINDER_PLANE_README.md)**: Geometric primitive documentation
 
 ### Ray-Object Intersection Documentation

@@ -8,12 +8,13 @@ if [ $? -eq 0 ]; then
     echo "Build successful! Choose which scene to run:"
     echo "1. Main scene (spheres, cylinders, plane with lighting)"
     echo "2. Box scene (closed box with objects inside)"
-    echo "3. Run both scenes (will open two windows)"
+    echo "3. Pipe scene (camera inside infinite cylinder with floating objects)"
+    echo "4. Run all scenes (will open three windows)"
     echo ""
     echo "Note: Press ESC key to close the windows"
     echo ""
 
-    read -p "Enter your choice (1, 2, or 3): " choice
+    read -p "Enter your choice (1, 2, 3, or 4): " choice
 
     case $choice in
         1)
@@ -25,11 +26,17 @@ if [ $? -eq 0 ]; then
             ./rt_box
             ;;
         3)
-            echo "Running both scenes..."
-            echo "Main scene will open first, then box scene"
+            echo "Running pipe scene..."
+            ./rt_pipe
+            ;;
+        4)
+            echo "Running all scenes..."
+            echo "Main scene will open first, then box scene, then pipe scene"
             ./rt &
             sleep 2
-            ./rt_box
+            ./rt_box &
+            sleep 2
+            ./rt_pipe
             ;;
         *)
             echo "Invalid choice. Exiting."

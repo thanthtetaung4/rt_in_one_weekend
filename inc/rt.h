@@ -107,6 +107,7 @@ t_scene *create_scene(void);
 void free_scene(t_scene *scene);
 void setup_regular_scene(t_scene *scene);
 void setup_box_scene(t_scene *scene);
+void setup_pipe_scene(t_scene *scene);
 
 // Ray tracing functions
 void IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere, double *t1, double *t2);
