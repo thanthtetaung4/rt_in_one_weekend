@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 04:18:33 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/09 07:12:34 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,15 @@ typedef struct s_material
 	double specular;  // Specular reflection coefficient (0.0 to 1.0)
 	double shininess; // Shininess exponent for specular highlights
 }					t_material;
+
+typedef struct s_hit
+{
+	double		t;
+	t_vec3		point;
+	t_vec3		normal;
+	t_material	material;
+	int			hit;
+}	t_hit;
 
 // ======================= Sphere =======================
 typedef struct s_sphere
@@ -85,17 +94,24 @@ typedef struct s_point_light
 // ======================= Camera =======================
 typedef struct s_camera
 {
-	t_vec3 P;   // Position
-	t_vec3 D;   // Direction (normalized)
-	double fov; // Horizontal field of view in radians
+	t_vec3	P;   // Position
+	t_vec3	D;   // Direction (normalized)
+	double	fov; // Horizontal field of view in radians
+	t_vec3	dir_forward;
+	t_vec3	dir_right;
+	t_vec3	dir_up;
+	t_vec3	foc_point;
 }					t_camera;
 
 typedef struct s_camera_view
 {
+	double			width;
+	double			height;
+	t_vec3			upper_left;
 	t_vec3			pixel00;
 	t_vec3			pixel_delta_u;
 	t_vec3			pixel_delta_v;
-}					t_camera_view;
+}	t_camera_view;
 
 // ======================= Scene Data Structure =======================
 typedef struct s_scene
@@ -128,7 +144,7 @@ typedef struct  s_data
 {
 	void	*mlx;
 	void	*mlx_win;
-	t_scene	scene;
+	t_scene	*scene;
 
 }   t_data;
 
@@ -140,14 +156,21 @@ t_scene				*create_scene(void);
 void				free_scene(t_scene *scene);
 
 // Ray tracing functions
-void				IntersectRaySphere(t_vec3 O, t_vec3 D, t_sphere sphere,
-						double *t1, double *t2);
-void				IntersectRayCylinder(t_vec3 O, t_vec3 D,
-						t_cylinder cylinder, double *t1, double *t2);
-void				IntersectRayPlane(t_vec3 O, t_vec3 D, t_plane plane,
+void	IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1, double *t2);
+t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t);
+t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres, t_hit closest_hit);
+
+void	IntersectRayCylinder(t_ray ray,t_cylinder cylinder, double *t1, double *t2);
+t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
+t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders, t_hit closest_hit);
+
+void				IntersectRayPlane(t_ray ray, t_plane plane,
 						double *t);
-t_color				TraceRay(t_vec3 O, t_vec3 D, double t_min, double t_max,
-						t_scene *scene);
+t_hit	get_plane_hit(t_ray ray, t_plane plane, double t);
+t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes, t_hit closest_hit);
+
+
+t_color				TraceRay(t_ray ray, t_scene *scene);
 
 // Lighting functions
 t_color				calculate_lighting(t_vec3 hit_point, t_vec3 normal,
@@ -159,8 +182,7 @@ t_color				color_add(t_color a, t_color b);
 t_color				color_clamp(t_color color);
 
 // Camera functions
-t_camera_view		setup_camera(t_camera camera, int image_width,
-						int image_height);
+t_camera_view		setup_camera(t_camera camera, t_scene *scene);
 
 // Render functions
 void				render_scene(FILE *f, t_scene *scene);

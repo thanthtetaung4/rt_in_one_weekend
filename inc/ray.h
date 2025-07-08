@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:11 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 03:32:23 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 06:51:16 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@
 typedef struct s_ray
 {
 	t_vec3	origin;
-	t_vec3	direction;
-}			t_ray;
+	t_vec3	dir;
+	double	t_min;
+	double	t_max;
+}	t_ray;
+
+t_ray	init_ray(t_vec3 origin, t_vec3 dir, double t_min, double t_max);
 
 #endif

@@ -9,3 +9,4 @@ double	ft_fabs(double x)
 {
 	return (x < 0) ? -x : x;
 }
+

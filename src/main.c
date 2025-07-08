@@ -8,33 +8,31 @@ static int	color_to_mlx(t_color color)
 	return ((color.r << 16) | (color.g << 8) | color.b);
 }
 
-static void	render_to_mlx_image(t_data *data)
+static void	render_to_mlx_image(t_scene *scene, t_data *data)
 {
 	t_camera_view	view;
+	t_ray			ray;
 	t_vec3			pixel;
-	t_vec3			ray_dir;
-	t_color			color;
-	int				mlx_color;
-	int				y;
-	int				x;
+	int				xy[2];
 
-	view = setup_camera(scene->camera, scene->width, scene->height); // (scene);
-	y = 0;
-	while (y < scene->height)
+	ray = init_ray(scene->camera.P, vec3_create(0, 0, 0), 1.0, DBL_MAX);
+	view = setup_camera(scene->camera, scene);
+	xy[1] = 0;
+	while (xy[1] < scene->height)
 	{
-		x = 0;
-		while (x < scene->width)
+		xy[0] = 0;
+		while (xy[0] < scene->width)
 		{
 			pixel = vec3_add(view.pixel00,
-					vec3_add(vec3_scale(view.pixel_delta_u, x),
-						vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
-			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
-			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
-			mlx_color = color_to_mlx(color);
-			mlx_pixel_put(data->mlx, data->mlx_win, x, y, mlx_color);
-			x++;
+					vec3_add(vec3_scale(view.pixel_delta_u, xy[0]),
+						vec3_scale(view.pixel_delta_v, scene->height - 1
+							- xy[1])));
+			ray.dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
+			mlx_pixel_put(data->mlx, data->mlx_win, xy[0], xy[1],
+				color_to_mlx(TraceRay(ray, scene)));
+			xy[0]++;
 		}
-		y++;
+		xy[1]++;
 	}
 }
 
@@ -63,32 +61,31 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 
-	scene = create_scene();
-	if (!scene)
-		return(print_error("Error: Failed to create scene\n"));
 	ft_bzero(&data, sizeof(t_data));
+	data.scene = create_scene();
+	if (!data.scene)
+		return(print_error("Error: Failed to create scene\n"));
 	data.mlx = mlx_init();
 	if (!data.mlx)
 		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
-	if (!parse_rt_file(argv[1], scene))
-	{
-		
-		free_scene(scene);
+	if (!parse_rt_file(argv[1], data.scene))
+	{	
+		free_scene(data.scene);
 		mlx_destroy_display(data.mlx);
 		free(data.mlx);
 		return (print_error("Error: Failed to parse atom.rt\n"));
 	}
-	data.mlx_win = mlx_new_window(data.mlx, scene->width, scene->height,
+	data.mlx_win = mlx_new_window(data.mlx, data.scene->width, data.scene->height,
 			"Ray Tracer");
 	if (!data.mlx_win)
 	{
-		free_scene(scene);
+		free_scene(data.scene);
 		mlx_destroy_display(data.mlx);
 		free(data.mlx);
 		return (print_error("Error: Failed to create window\n"));
 	}
 	printf("Rendering scene to window...\n");
-	render_to_mlx_image(&data);
+	render_to_mlx_image(data.scene, &data);
 	printf("Rendering complete! Press ESC to exit.\n");
 	mlx_key_hook(data.mlx_win, key_hook, &data);
 	mlx_hook(data.mlx_win, 17, 0, close_hook, &data);

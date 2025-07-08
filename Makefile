@@ -27,10 +27,10 @@ UTILS = $(DEFAULT)/utils
 VEC3 = $(DEFAULT)/vec3
 GNL = $(DEFAULT)/gnl/gnl.c
 
-SRCS = $(GNL) $(DEFAULT)/main.c \
+SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(VEC3)/vec3.c $(VEC3)/vec3_ops.c $(VEC3)/vec3_scale.c \
 		$(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c \
-		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c \
+		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/hit_utils.c\
 		$(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c $(UTILS)/error_utils.c
 OBJS = $(SRCS:.c=.o)
 

@@ -40,7 +40,7 @@ t_color	color_clamp(t_color color)
 	return (result);
 }
 
-static int	check_sphere_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_direction,
+static int	check_sphere_shadows(t_ray shadow_ray,
 		double light_distance, t_scene *scene)
 {
 	int		i;
@@ -50,7 +50,7 @@ static int	check_sphere_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_dire
 	i = 0;
 	while (i < scene->num_spheres)
 	{
-		IntersectRaySphere(shadow_ray_origin, shadow_ray_direction, scene->spheres[i], &t1, &t2);
+		IntersectRaySphere(shadow_ray, scene->spheres[i], &t1, &t2);
 		if (t1 > 0.001 && t1 < light_distance)
 			return (1);
 		if (t2 > 0.001 && t2 < light_distance)
@@ -60,8 +60,7 @@ static int	check_sphere_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_dire
 	return (0);
 }
 
-static int	check_cylinder_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_direction,
-		double light_distance, t_scene *scene)
+static int	check_cylinder_shadows(t_ray shadow_ray, double light_distance, t_scene *scene)
 {
 	int		i;
 	double	t1;
@@ -70,7 +69,7 @@ static int	check_cylinder_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_di
 	i = 0;
 	while (i < scene->num_cylinders)
 	{
-		IntersectRayCylinder(shadow_ray_origin, shadow_ray_direction, scene->cylinders[i], &t1, &t2);
+		IntersectRayCylinder(shadow_ray, scene->cylinders[i], &t1, &t2);
 		if (t1 > 0.001 && t1 < light_distance)
 			return (1);
 		if (t2 > 0.001 && t2 < light_distance)
@@ -80,7 +79,7 @@ static int	check_cylinder_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_di
 	return (0);
 }
 
-static int	check_plane_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_direction,
+static int	check_plane_shadows(t_ray shadow_ray,
 		double light_distance, t_scene *scene)
 {
 	int		i;
@@ -89,7 +88,7 @@ static int	check_plane_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_direc
 	i = 0;
 	while (i < scene->num_planes)
 	{
-		IntersectRayPlane(shadow_ray_origin, shadow_ray_direction, scene->planes[i], &t);
+		IntersectRayPlane(shadow_ray, scene->planes[i], &t);
 		if (t > 0.001 && t < light_distance)
 			return (1);
 		i++;
@@ -99,16 +98,18 @@ static int	check_plane_shadows(t_vec3 shadow_ray_origin, t_vec3 shadow_ray_direc
 
 int	is_in_shadow(t_vec3 hit_point, t_vec3 light_direction, double light_distance, t_scene *scene)
 {
-	t_vec3	shadow_ray_origin;
-	t_vec3	shadow_ray_direction;
+	t_ray	shadow_ray;
+	// t_vec3	shadow_ray_origin;
+	// t_vec3	shadow_ray_direction;
 
-	shadow_ray_origin = hit_point;
-	shadow_ray_direction = light_direction;
-	if (check_sphere_shadows(shadow_ray_origin, shadow_ray_direction, light_distance, scene))
+	ft_bzero(&shadow_ray, sizeof(t_ray));
+	shadow_ray.origin = hit_point;
+	shadow_ray.dir = light_direction;
+	if (check_sphere_shadows(shadow_ray, light_distance, scene))
 		return (1);
-	if (check_cylinder_shadows(shadow_ray_origin, shadow_ray_direction, light_distance, scene))
+	if (check_cylinder_shadows(shadow_ray, light_distance, scene))
 		return (1);
-	if (check_plane_shadows(shadow_ray_origin, shadow_ray_direction, light_distance, scene))
+	if (check_plane_shadows(shadow_ray, light_distance, scene))
 		return (1);
 	return (0);
 }
