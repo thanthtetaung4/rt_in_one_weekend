@@ -94,6 +94,6 @@ re: fclean all
 
 # Compile .o files
 %.o: %.c
-	@$(CC) $(CFLAGS) -I$(MLX_PATH) -I$(LIBFT_PATH) -c $< -o $@
+	@$(CC) $(CFLAGS) -I$(MLX_PATH) -I$(LIBFT_PATH) -Iinc -c $< -o $@
 
 .PHONY: all clean fclean re

@@ -1,4 +1,4 @@
-#include "../../inc/rt.h"
+#include "rt.h"
 
 typedef struct s_hit_record
 {

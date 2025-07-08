@@ -1,14 +1,9 @@
 #include "../inc/rt.h"
-#include "../mlx/mlx.h"
+#include <mlx.h>
 
-void	*mlx_ptr;
-void	*win_ptr;
-void	*img_ptr;
-char	*img_data;
-int		bits_per_pixel;
-int		size_line;
-int		endian;
-t_scene	*scene;
+void		*mlx_ptr;
+void		*win_ptr;
+t_scene		*scene;
 
 // Function to convert color to MLX format
 static int	color_to_mlx(t_color color)
@@ -26,7 +21,7 @@ static void	render_to_mlx_image(void)
 	int				y;
 	int				x;
 
-	view = setup_camera(scene->camera, scene->width, scene->height);
+	view = setup_camera(scene->camera, scene->width, scene->height); // (scene);
 	y = 0;
 	while (y < scene->height)
 	{
@@ -92,7 +87,8 @@ int	main(int argc, char **argv)
 		free(mlx_ptr);
 		return (1);
 	}
-	win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height, "Ray Tracer");
+	win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height,
+			"Ray Tracer");
 	if (!win_ptr)
 	{
 		printf("Error: Failed to create window\n");
