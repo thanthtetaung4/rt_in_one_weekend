@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 03:32:37 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 04:18:33 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
 
-# include "../src/gnl/gnl.h"
+# include "gnl.h"
 # include "color.h"
 # include "ft_math.h"
 # include "ray.h"
@@ -22,6 +22,7 @@
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <mlx.h>
 
 # define PI 3.14159265358979323846
 
@@ -123,6 +124,15 @@ typedef struct s_scene
 	int				height;
 }					t_scene;
 
+typedef struct  s_data
+{
+	void	*mlx;
+	void	*mlx_win;
+	t_scene	scene;
+
+}   t_data;
+
+
 // ======================= Function Declarations =======================
 
 // Scene management functions
@@ -159,5 +169,8 @@ void				render_scene_with_planes(FILE *f, t_scene *scene);
 void				render_scene_with_lighting(FILE *f, t_scene *scene);
 
 int					parse_rt_file(const char *filename, t_scene *scene);
+
+// Error
+int					print_error(char *msg);
 
 #endif

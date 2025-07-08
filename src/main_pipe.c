@@ -1,8 +1,8 @@
 #include "../inc/rt.h"
 #include "../mlx/mlx.h"
 
-void	*mlx_ptr;
-void	*win_ptr;
+void	*mlx;
+void	*mlx_win;
 void	*img_ptr;
 char	*img_data;
 int		bits_per_pixel;
@@ -40,7 +40,7 @@ static void	render_to_mlx_image(void)
 			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
 			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
 			mlx_color = color_to_mlx(color);
-			mlx_pixel_put(mlx_ptr, win_ptr, x, y, mlx_color);
+			mlx_pixel_put(mlx, mlx_win, x, y, mlx_color);
 			x++;
 		}
 		y++;
@@ -54,9 +54,9 @@ static int	key_hook(int keycode, void *param)
 	if (keycode == 65307)
 	{
 		free_scene(scene);
-		mlx_destroy_window(mlx_ptr, win_ptr);
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
+		mlx_destroy_window(mlx, mlx_win);
+		mlx_destroy_display(mlx);
+		free(mlx);
 		exit(0);
 	}
 	return (0);
@@ -67,16 +67,16 @@ static int	close_hook(void *param)
 {
 	(void)param;
 	free_scene(scene);
-	mlx_destroy_window(mlx_ptr, win_ptr);
-	mlx_destroy_display(mlx_ptr);
-	free(mlx_ptr);
+	mlx_destroy_window(mlx, mlx_win);
+	mlx_destroy_display(mlx);
+	free(mlx);
 	exit(0);
 }
 
 int	main(void)
 {
-	mlx_ptr = mlx_init();
-	if (!mlx_ptr)
+	mlx = mlx_init();
+	if (!mlx)
 	{
 		printf("Error: Failed to initialize MLX\n");
 		return (1);
@@ -85,25 +85,25 @@ int	main(void)
 	if (!scene)
 	{
 		printf("Error: Failed to create scene\n");
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
+		mlx_destroy_display(mlx);
+		free(mlx);
 		return (1);
 	}
 	setup_pipe_scene(scene);
-	win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height, "Pipe Scene - Ray Tracer");
-	if (!win_ptr)
+	mlx_win = mlx_new_window(mlx, scene->width, scene->height, "Pipe Scene - Ray Tracer");
+	if (!mlx_win)
 	{
 		printf("Error: Failed to create window\n");
 		free_scene(scene);
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
+		mlx_destroy_display(mlx);
+		free(mlx);
 		return (1);
 	}
 	printf("Rendering pipe scene to window...\n");
 	render_to_mlx_image();
 	printf("Rendering complete! Press ESC to exit.\n");
-	mlx_key_hook(win_ptr, key_hook, NULL);
-	mlx_hook(win_ptr, 17, 0, close_hook, NULL);
-	mlx_loop(mlx_ptr);
+	mlx_key_hook(mlx_win, key_hook, NULL);
+	mlx_hook(mlx_win, 17, 0, close_hook, NULL);
+	mlx_loop(mlx);
 	return (0);
 }

@@ -1,8 +1,5 @@
-#include "../inc/rt.h"
-#include <mlx.h>
+#include "rt.h"
 
-void		*mlx_ptr;
-void		*win_ptr;
 t_scene		*scene;
 
 // Function to convert color to MLX format
@@ -11,7 +8,7 @@ static int	color_to_mlx(t_color color)
 	return ((color.r << 16) | (color.g << 8) | color.b);
 }
 
-static void	render_to_mlx_image(void)
+static void	render_to_mlx_image(t_data *data)
 {
 	t_camera_view	view;
 	t_vec3			pixel;
@@ -34,74 +31,67 @@ static void	render_to_mlx_image(void)
 			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
 			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
 			mlx_color = color_to_mlx(color);
-			mlx_pixel_put(mlx_ptr, win_ptr, x, y, mlx_color);
+			mlx_pixel_put(data->mlx, data->mlx_win, x, y, mlx_color);
 			x++;
 		}
 		y++;
 	}
 }
 
-static int	key_hook(int keycode, void *param)
+static int	close_hook(t_data *data)
 {
-	(void)param;
-	if (keycode == 65307)
-	{
-		mlx_destroy_window(mlx_ptr, win_ptr);
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
+	if (data->mlx && data->mlx_win)
+	{	mlx_destroy_window(data->mlx, data->mlx_win);
+		mlx_destroy_display(data->mlx);
+		free(data->mlx);
 		exit(0);
 	}
 	return (0);
 }
 
-static int	close_hook(void *param)
+static int	key_hook(int keycode, void *param)
 {
-	(void)param;
-	mlx_destroy_window(mlx_ptr, win_ptr);
-	mlx_destroy_display(mlx_ptr);
-	free(mlx_ptr);
-	exit(0);
+	t_data	*data;
+
+	data = (t_data *)param;
+	if (keycode == 65307)
+		close_hook(data);
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	mlx_ptr = mlx_init();
-	if (!mlx_ptr)
-	{
-		printf("Error: Failed to initialize MLX\n");
-		return (1);
-	}
+	t_data	data;
+
 	scene = create_scene();
 	if (!scene)
-	{
-		printf("Error: Failed to create scene\n");
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
-		return (1);
-	}
+		return(print_error("Error: Failed to create scene\n"));
+	ft_bzero(&data, sizeof(t_data));
+	data.mlx = mlx_init();
+	if (!data.mlx)
+		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
 	if (!parse_rt_file(argv[1], scene))
 	{
-		printf("Error: Failed to parse atom.rt\n");
+		
 		free_scene(scene);
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
-		return (1);
+		mlx_destroy_display(data.mlx);
+		free(data.mlx);
+		return (print_error("Error: Failed to parse atom.rt\n"));
 	}
-	win_ptr = mlx_new_window(mlx_ptr, scene->width, scene->height,
+	data.mlx_win = mlx_new_window(data.mlx, scene->width, scene->height,
 			"Ray Tracer");
-	if (!win_ptr)
+	if (!data.mlx_win)
 	{
-		printf("Error: Failed to create window\n");
 		free_scene(scene);
-		mlx_destroy_display(mlx_ptr);
-		free(mlx_ptr);
-		return (1);
+		mlx_destroy_display(data.mlx);
+		free(data.mlx);
+		return (print_error("Error: Failed to create window\n"));
 	}
 	printf("Rendering scene to window...\n");
-	render_to_mlx_image();
+	render_to_mlx_image(&data);
 	printf("Rendering complete! Press ESC to exit.\n");
-	mlx_key_hook(win_ptr, key_hook, NULL);
-	mlx_hook(win_ptr, 17, 0, close_hook, NULL);
-	mlx_loop(mlx_ptr);
+	mlx_key_hook(data.mlx_win, key_hook, &data);
+	mlx_hook(data.mlx_win, 17, 0, close_hook, &data);
+	mlx_loop(data.mlx);
 	return (0);
 }

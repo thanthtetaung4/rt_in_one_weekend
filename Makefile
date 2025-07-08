@@ -20,14 +20,18 @@ LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
 CFLAGS = #-Wall -Wextra -Werror
-
+INCLUDE = -I$(MLX_PATH) -I$(LIBFT_PATH) -Iinc -Isrc/gnl -Isrc/vec3
 # Source and object files
 DEFAULT = ./src
 UTILS = $(DEFAULT)/utils
 VEC3 = $(DEFAULT)/vec3
 GNL = $(DEFAULT)/gnl/gnl.c
 
-SRCS = $(GNL) $(DEFAULT)/main.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
+SRCS = $(GNL) $(DEFAULT)/main.c \
+		$(VEC3)/vec3.c $(VEC3)/vec3_ops.c $(VEC3)/vec3_scale.c \
+		$(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c \
+		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c \
+		$(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c $(UTILS)/error_utils.c
 OBJS = $(SRCS:.c=.o)
 
 # BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
@@ -94,6 +98,6 @@ re: fclean all
 
 # Compile .o files
 %.o: %.c
-	@$(CC) $(CFLAGS) -I$(MLX_PATH) -I$(LIBFT_PATH) -Iinc -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 .PHONY: all clean fclean re
