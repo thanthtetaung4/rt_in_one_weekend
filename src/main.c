@@ -1,7 +1,5 @@
 #include "rt.h"
 
-t_scene		*scene;
-
 // Function to convert color to MLX format
 static int	color_to_mlx(t_color color)
 {
@@ -18,18 +16,21 @@ static void	render_to_mlx_image(t_data *data)
 	int				y;
 	int				x;
 
-	view = setup_camera(scene->camera, scene->width, scene->height); // (scene);
+	printf("h: %d, w: %d\n", data->scene->width, data->scene->height);
+	view = setup_camera(data->scene->camera, data->scene->width, data->scene->height); // (scene);
 	y = 0;
-	while (y < scene->height)
+	while (y < data->scene->height)
 	{
 		x = 0;
-		while (x < scene->width)
+		while (x < data->scene->width)
 		{
 			pixel = vec3_add(view.pixel00,
 					vec3_add(vec3_scale(view.pixel_delta_u, x),
-						vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
-			ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
-			color = TraceRay(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
+						vec3_scale(view.pixel_delta_v, data->scene->height - 1 - y)));
+			ray_dir = vec3_normalize(vec3_sub(pixel, data->scene->camera.P));
+			color = TraceRay(data->scene->camera.P, ray_dir, 1.0, DBL_MAX, data->scene);
+			print_rgb(color);
+			printf("\n");
 			mlx_color = color_to_mlx(color);
 			mlx_pixel_put(data->mlx, data->mlx_win, x, y, mlx_color);
 			x++;
@@ -63,26 +64,30 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 
-	scene = create_scene();
-	if (!scene)
-		return(print_error("Error: Failed to create scene\n"));
 	ft_bzero(&data, sizeof(t_data));
+	data.scene = create_scene();
+	if (!data.scene)
+		return(print_error("Error: Failed to create scene\n"));
+	// printf("h: %d, w: %d\n", data.scene->height, data.scene->width);
+
+	// parser(argv[1], &data);
 	data.mlx = mlx_init();
 	if (!data.mlx)
 		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
-	if (!parse_rt_file(argv[1], scene))
+	// if (!parse_rt_file(argv[1], scene))
+	if (!parser(argv[1], &data))
 	{
-		
-		free_scene(scene);
+
+		free_scene(data.scene);
 		mlx_destroy_display(data.mlx);
 		free(data.mlx);
-		return (print_error("Error: Failed to parse atom.rt\n"));
+		return (print_error("Error: Failed to parse input file\n"));
 	}
-	data.mlx_win = mlx_new_window(data.mlx, scene->width, scene->height,
+	data.mlx_win = mlx_new_window(data.mlx, data.scene->width, data.scene->height,
 			"Ray Tracer");
 	if (!data.mlx_win)
 	{
-		free_scene(scene);
+		free_scene(data.scene);
 		mlx_destroy_display(data.mlx);
 		free(data.mlx);
 		return (print_error("Error: Failed to create window\n"));

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atof_vali.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:52:09 by taung             #+#    #+#             */
-/*   Updated: 2025/05/14 01:36:35 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/09 06:33:07 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	parse_fractional_part(const char *str, int *i, float *frac)
+static int	parse_fractional_part(const char *str, int *i, double *frac)
 {
-	float	decimal_place;
+	double	decimal_place;
 
 	*frac = 0.0f;
 	decimal_place = 1.0f;
@@ -53,11 +53,11 @@ static int	skip_sign(const char *str, int *negative)
 	return (i);
 }
 
-int	ft_atof_vali(const char *str, float *result)
+int	ft_atof_vali(const char *str, double *result)
 {
 	int		i;
 	int		negative;
-	float	frac;
+	double	frac;
 
 	i = 0;
 	*result = 0.0f;

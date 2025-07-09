@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 04:18:33 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/09 16:29:08 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "ft_math.h"
 # include "ray.h"
 # include "vec3.h"
+
 # include <float.h>
 # include <math.h>
 # include <stdio.h>
@@ -111,6 +112,12 @@ typedef struct s_scene
 	t_plane			*planes;
 	int				num_planes;
 
+	// Iterators
+	int				sp_i;
+	int				pl_i;
+	int				l_i;
+	int				cy_i;
+
 	// Lighting
 	t_ambient_light	ambient;
 	t_point_light	*lights;
@@ -128,7 +135,7 @@ typedef struct  s_data
 {
 	void	*mlx;
 	void	*mlx_win;
-	t_scene	scene;
+	t_scene	*scene;
 
 }   t_data;
 
@@ -173,4 +180,9 @@ int					parse_rt_file(const char *filename, t_scene *scene);
 // Error
 int					print_error(char *msg);
 
+//Utils
+int					td_len(char **td);
+
+# include "parsing.h"
+# include "print.h"
 #endif
