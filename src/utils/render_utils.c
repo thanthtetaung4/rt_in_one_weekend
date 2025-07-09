@@ -28,7 +28,7 @@ static void	render_scene_internal(FILE *f, t_scene *scene,
 	t_camera_view	view;
 	int				y;
 
-	view = setup_camera(scene->camera, scene->width, scene->height);
+	view = setup_camera(scene->camera, scene);
 	fprintf(f, "P3\n%d %d\n255\n", scene->width, scene->height);
 	y = 0;
 	while (y < scene->height)
