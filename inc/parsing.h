@@ -15,5 +15,6 @@ int	parse_material(const char *spc, const char *mir, t_material *mat);
 int	parser(char *filename, t_data *data);
 void	count_onl(char *filename, t_data *data);
 int	check_range(float value, float min, float max);
+int	parse_ratio(char *line, t_scene *scene);
 
 #endif

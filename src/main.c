@@ -66,6 +66,7 @@ int	main(int argc, char **argv)
 	data.mlx = mlx_init();
 	if (!data.mlx)
 		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
+	// if (!parse_rt_file(argv[1], data.scene))
 	if (!parser(argv[1], &data))
 	{
 		free_scene(data.scene);

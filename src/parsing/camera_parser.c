@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 14:38:26 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 20:19:23 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,6 @@ int	parse_camera(char *line, t_camera *camera)
 		!ft_atof_vali(split[3], &camera->fov) ||
 		!check_range(camera->fov, 0, 180))
 		return (free_strs(split), 0);
+	camera->fov = camera->fov * (PI / 180.0);
 	return (free_strs(split), 1);
 }

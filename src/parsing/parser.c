@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:31:33 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 16:41:10 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 20:02:49 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,47 +34,48 @@ int	parse_rgb(char *str, t_color *color)
 {
 	char	**rgb;
 
-	printf("parsing rgb\n");
 	rgb = ft_split(str, ",");
 	if (ft_strslen(rgb) != 3)
 		return (free_strs(rgb), 0);
-	if (ft_atoi_vali(rgb[0], &color->r) && check_range(color->r, 0, 255))
+	if (!ft_atoi_vali(rgb[0], &color->r) || !check_range(color->r, 0, 255) ||
+		!ft_atoi_vali(rgb[1], &color->g) || !check_range(color->g, 0, 255) ||
+		!ft_atoi_vali(rgb[2], &color->b) || !check_range(color->b, 0, 255))
 	{
-		if (ft_atoi_vali(rgb[1], &color->g) && check_range(color->g, 0, 255))
-		{
-			if (ft_atoi_vali(rgb[2], &color->b) && check_range(color->b, 0, 255))
-				return (printf("rgb ok\n"), free_strs(rgb), 1);
-		}
+		free_strs(rgb);
+		return (0);
 	}
 	free_strs(rgb);
-	return (printf("rgb ok\n"), 0);
+	return (1);
 }
 
-int	parse_xyz(char *str, t_vec3 *origin, int vector)
+int	parse_xyz(char *str, t_vec3 *vec3, int vector)
 {
 	char	**xyz;
 
 	xyz = ft_split(str, ",");
-	printf("parsing xyz\n");
 	if (ft_strslen(xyz) != 3)
 		return (free_strs(xyz), 0);
-	if (ft_atof_vali(xyz[0], &origin->x) && ft_atof_vali(xyz[1], &origin->y) &&
-		ft_atof_vali(xyz[2], &origin->z))
+	if (!ft_atof_vali(xyz[0], &vec3->x) || !ft_atof_vali(xyz[1], &vec3->y) ||
+		!ft_atof_vali(xyz[2], &vec3->z))
 	{
 		if (vector)
 		{
-			if (check_range(origin->x, -1, 1) || check_range(origin->y, -1, 1)
-			|| check_range(origin->z, -1, 1))
-			return (free_strs(xyz), 1);
+			if (!check_range(vec3->x, -1, 1) || !check_range(vec3->y, -1, 1)
+			|| !check_range(vec3->z, -1, 1))
+			{
+				free_strs(xyz);
+				return (0);
+			}
+			return (free_strs(xyz), 0);
 		}
 		free_strs(xyz);
-		return (1);
+		return (0);
 	}
 	free_strs(xyz);
-	return (0);
+	return (1);
 }
 
-int	scene_parser(char *res, t_data *data)
+int	world_parser(char *res, t_data *data)
 {
 	char	**split;
 
@@ -94,6 +95,11 @@ int	scene_parser(char *res, t_data *data)
 	{
 		if (!parse_light(res, data))
 			return (print_error("Error: Invalid light!\n"));
+	}
+	else if (ft_strcmp(split[0], "r") == 0)
+	{
+		if (!parse_ratio(res, data->scene))
+			return (free_strs(split), print_error("Error: Invalid ratio!\n"));
 	}
 	free_strs(split);
 	return (1);
@@ -138,7 +144,7 @@ int	parser(char *filename, t_data *data)
 	res = gnl(fd);
 	while (res)
 	{
-		if (*res != '\n' && (!scene_parser(res, data) || !object_parser(res, data)))
+		if (*res != '\n' && (!world_parser(res, data) || !object_parser(res, data)))
 		{
 			free(res);
 			// free_all(data);

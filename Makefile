@@ -36,7 +36,7 @@ SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(PARSING)/parser_utils.c $(PARSING)/parser.c $(PARSING)/material_parser.c \
 		$(PARSING)/ambient_parser.c $(PARSING)/light_parser.c \
 		$(PARSING)/camera_parser.c $(PARSING)/sphere_parser.c $(PARSING)/cylinder_parser.c \
-		$(PARSING)/plane_parser.c $(UTILS)/print.c
+		$(PARSING)/plane_parser.c $(UTILS)/print.c $(PARSING)/ratio_parser.c
 OBJS = $(SRCS:.c=.o)
 
 # BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c

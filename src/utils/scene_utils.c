@@ -52,17 +52,17 @@ void	free_scene(t_scene *scene)
 	free(scene);
 }
 
-static t_color parse_color(const char *str) {
-	t_color color = {0, 0, 0};
-	sscanf(str, "%d,%d,%d", &color.r, &color.g, &color.b);
-	return color;
-}
+// static t_color parse_color(const char *str) {
+// 	t_color color = {0, 0, 0};
+// 	sscanf(str, "%d,%d,%d", &color.r, &color.g, &color.b);
+// 	return color;
+// }
 
-static t_vec3 parse_vec3(const char *str) {
-	t_vec3 v = {0, 0, 0};
-	sscanf(str, "%lf,%lf,%lf", &v.x, &v.y, &v.z);
-	return v;
-}
+// static t_vec3 parse_vec3(const char *str) {
+// 	t_vec3 v = {0, 0, 0};
+// 	sscanf(str, "%lf,%lf,%lf", &v.x, &v.y, &v.z);
+// 	return v;
+// }
 
 // static void parse_material(const char *str, t_material *mat) {
 // 	mat->ambient = 0.1;

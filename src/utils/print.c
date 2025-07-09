@@ -28,6 +28,15 @@ void	print_pl(t_plane *planes, int num_planes)
 	}
 }
 
+void	print_mat(t_material mat)
+{
+	printf("material:\n");
+	printf("\tambient: %f\n", mat.ambient);
+	printf("\tdiffuse: %f\n", mat.diffuse);
+	printf("\tspecular: %f\n", mat.specular);
+	printf("\tshininess: %f\n", mat.shininess);
+}
+
 void	print_sp(t_sphere *spheres, int sp_count)
 {
 	int	i;
@@ -39,6 +48,7 @@ void	print_sp(t_sphere *spheres, int sp_count)
 		print_xyz(spheres[i].center);
 		printf(", radius - %f, ", spheres[i].radius);
 		print_rgb(spheres[i].material.color);
+		print_mat(spheres[i].material);
 		printf("\n");
 		i++;
 	}
