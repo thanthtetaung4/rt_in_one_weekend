@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 19:06:56 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 21:25:36 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int parse_sphere(char *line, t_data *data)
 	sphere.radius /= 2;
 	printf("sp ok\n");
 	if (split[4])
-		parse_material(split[4], split[5], &sphere.material);
+		parse_material_i(split[4], split[5], &sphere.material);
 	data->scene->spheres[data->scene->sp_i++] = sphere;
 	free_strs(split);
 	return (1);

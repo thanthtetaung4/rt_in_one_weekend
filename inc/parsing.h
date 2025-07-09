@@ -11,10 +11,10 @@ int	parse_plane(char *line, t_data *data);
 int	parse_cylinder(char *line, t_data *data);
 int	parse_rgb(char *line, t_color *color);
 int	parse_xyz(char *line, t_vec3 *vec, int is_vector);
-int	parse_material(const char *spc, const char *mir, t_material *mat);
+int	parse_material_i(const char *spc, const char *mir, t_material *mat);
 int	parser(char *filename, t_data *data);
 void	count_onl(char *filename, t_data *data);
 int	check_range(float value, float min, float max);
 int	parse_ratio(char *line, t_scene *scene);
-
+void	init_mat(t_material *mat);
 #endif

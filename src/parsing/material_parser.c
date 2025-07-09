@@ -1,6 +1,6 @@
 # include "rt.h"
 
-static void	init_mat(t_material *mat)
+void	init_mat(t_material *mat)
 {
 	mat->ambient = 0.2;
 	mat->diffuse = 0.7;
@@ -8,12 +8,13 @@ static void	init_mat(t_material *mat)
 	mat->shininess = 20;
 }
 
-int	parse_material(const char *spc, const char *mir, t_material *mat)
+int	parse_material_i(const char *spc, const char *mir, t_material *mat)
 {
 	char	**tmp;
 	char	**tmp2;
 	int		len;
 
+	printf("parsing material\n");
 	init_mat(mat);
 	tmp = ft_split(spc, ":,");
 	if (tmp)

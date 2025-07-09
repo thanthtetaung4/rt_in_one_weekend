@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 17:14:52 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 21:25:36 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int parse_plane(char *line, t_data *data)
 		!parse_rgb(split[3], &plane.material.color))
 		return (free_strs(split), 0);
 	if (split[4])
-		parse_material(split[4], split[5], &plane.material);
+		parse_material_i(split[4], split[5], &plane.material);
 	data->scene->planes[data->scene->pl_i++] = plane;
 	free_strs(split);
 	return (1);
