@@ -66,7 +66,7 @@ int	main(int argc, char **argv)
 	data.mlx = mlx_init();
 	if (!data.mlx)
 		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
-	if (!parse_rt_file(argv[1], data.scene))
+	if (!parser(argv[1], &data))
 	{
 		free_scene(data.scene);
 		mlx_destroy_display(data.mlx);
@@ -82,6 +82,9 @@ int	main(int argc, char **argv)
 		free(data.mlx);
 		return (print_error("Error: Failed to create window\n"));
 	}
+	printf("=================== Data Check ===================\n");
+	print_data(data);
+	printf("=================== Data Check Done ===================\n");
 	printf("Rendering scene to window...\n");
 	render_to_mlx_image(data.scene, &data);
 	printf("Rendering complete! Press ESC to exit.\n");

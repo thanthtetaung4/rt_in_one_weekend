@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 16:55:04 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/09 16:56:42 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,6 @@ typedef struct  s_data
 {
 	void	*mlx;
 	void	*mlx_win;
-	t_scene	*scene;
 	t_scene	*scene;
 
 }   t_data;
