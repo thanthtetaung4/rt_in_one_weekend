@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:37:25 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 16:39:12 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 17:17:42 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void	count_onl(char *filename, t_data *data)
 	int		fd;
 
 	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (ft_putstr_fd("INVALID PATH\n", 2));
 	line = gnl(fd);
 	while(line)
 	{
@@ -64,8 +66,9 @@ void	count_onl(char *filename, t_data *data)
 			data->scene->num_spheres++;
 		if(line[0] == 'c' && line[1] && line[1] == 'y')
 			data->scene->num_cylinders++;
+		free(line);
+		line = NULL;
 		line = gnl(fd);
 	}
-	printf("%d, %d, %d, %d\n", data->scene->num_lights, data->scene->num_planes, data->scene->num_spheres, data->scene->num_cylinders);
 	close(fd);
 }

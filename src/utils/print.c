@@ -12,7 +12,7 @@ void	print_rgb(t_color color)
 
 void	print_mat(t_material mat)
 {
-	printf("material:\n");
+	printf(", material:\n");
 	printf("\tambient: %f\n", mat.ambient);
 	printf("\tdiffuse: %f\n", mat.diffuse);
 	printf("\tspecular: %f\n", mat.specular);
@@ -32,8 +32,8 @@ void	print_pl(t_plane *planes, int num_planes)
 		print_xyz(planes[i].normal);
 		printf(", ");
 		print_rgb(planes[i].material.color);
-		printf("\n");
 		print_mat(planes[i].material);
+		printf("\n");
 		i++;
 	}
 }
@@ -113,19 +113,22 @@ int	print_2d_array(char **arr)
 void	print_camera(t_camera camera)
 {
 	printf("camera : ");
-	print_xyz(camera.P);
+	print_xyz(camera.p);
 	printf(", ");
-	print_xyz(camera.D);
+	print_xyz(camera.d);
 	printf(", fov - %f\n", camera.fov);
 }
 
 int	print_data(t_data data)
 {
+	printf("Successfully parsed data 🎉🎉\n");
+	printf("================== Data Start =================\n");
 	print_ambient(data.scene->ambient);
 	print_camera(data.scene->camera);
 	print_l(data.scene->lights, data.scene->num_lights);
 	print_sp(data.scene->spheres, data.scene->num_spheres);
 	print_cy(data.scene->cylinders, data.scene->num_cylinders);
 	print_pl(data.scene->planes, data.scene->num_planes);
+	printf("================== Data End =================\n");
 	return (10);
 }

@@ -6,7 +6,7 @@ t_camera_view	setup_camera(t_camera camera, t_scene *scene)
 	t_vec3			horizontal;
 	t_vec3			vertical;
 
-	camera.dir_forward = vec3_normalize(camera.D);
+	camera.dir_forward = vec3_normalize(camera.d);
 	if (fabs(camera.dir_forward.y) == 1.0)
 		world_up = vec3_create(0, 0, 1);
 	else
@@ -17,7 +17,7 @@ t_camera_view	setup_camera(t_camera camera, t_scene *scene)
 	view.height = view.width / ((double)scene->width / scene->height);
 	horizontal = vec3_scale(camera.dir_right, view.width);
 	vertical = vec3_scale(camera.dir_up, view.height);
-	camera.foc_point = vec3_add(camera.P, camera.dir_forward);
+	camera.foc_point = vec3_add(camera.p, camera.dir_forward);
 	view.upper_left = vec3_sub(vec3_sub(camera.foc_point,
 				vec3_scale(horizontal, 0.5)),
 			vec3_scale(vertical, 0.5));

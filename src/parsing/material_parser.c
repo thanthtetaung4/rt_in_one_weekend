@@ -1,4 +1,4 @@
-# include "rt.h"
+#include "rt.h"
 
 void	init_mat(t_material *mat)
 {
@@ -14,13 +14,12 @@ int	parse_material_i(const char *spc, const char *mir, t_material *mat)
 	char	**tmp2;
 	int		len;
 
-	printf("parsing material\n");
 	init_mat(mat);
 	tmp = ft_split(spc, ":,");
 	if (tmp)
 	{
-		print_2d_array(tmp);
-		if (ft_strslen(tmp) != 3 || !ft_atof_vali(tmp[1], &mat->specular) || !ft_atof_vali(tmp[2], &mat->shininess))
+		if (ft_strslen(tmp) != 3 || !ft_atof_vali(tmp[1], &mat->specular)
+			|| !ft_atof_vali(tmp[2], &mat->shininess))
 			return (0);
 		free_strs(tmp);
 		tmp = NULL;
@@ -28,8 +27,8 @@ int	parse_material_i(const char *spc, const char *mir, t_material *mat)
 	tmp = ft_split(mir, ":,");
 	if (tmp)
 	{
-		print_2d_array(tmp);
-		if (ft_strslen(tmp) != 3 || !ft_atof_vali(tmp[1], &mat->ambient) || !ft_atof_vali(tmp[2], &mat->diffuse))
+		if (ft_strslen(tmp) != 3 || !ft_atof_vali(tmp[1], &mat->ambient)
+			|| !ft_atof_vali(tmp[2], &mat->diffuse))
 			return (0);
 		free_strs(tmp);
 		tmp = NULL;

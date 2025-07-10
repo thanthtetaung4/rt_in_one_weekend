@@ -14,8 +14,8 @@ static void	render_pixel_row(FILE *f, t_camera_view view, t_scene *scene, int y,
 		pixel = vec3_add(view.pixel00,
 			vec3_add(vec3_scale(view.pixel_delta_u, x),
 				vec3_scale(view.pixel_delta_v, scene->height - 1 - y)));
-		ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.P));
-		color = trace_func(scene->camera.P, ray_dir, 1.0, DBL_MAX, scene);
+		ray_dir = vec3_normalize(vec3_sub(pixel, scene->camera.p));
+		color = trace_func(scene->camera.p, ray_dir, 1.0, DBL_MAX, scene);
 		fprintf(f, "%d %d %d ", color.r, color.g, color.b);
 		x++;
 	}

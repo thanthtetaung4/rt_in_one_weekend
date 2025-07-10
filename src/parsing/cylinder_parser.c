@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 22:23:47 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 17:10:20 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,14 @@ int parse_cylinder(char *line, t_data *data)
 		!parse_rgb(split[5], &cylinder.material.color))
 		return (free_strs(split), 0);
 	if (split[6])
-		parse_material_i(split[6], split[7], &cylinder.material);
+	{
+		if (!parse_material_i(split[6], split[7], &cylinder.material))
+			return (0);
+	}
 	else
 		init_mat(&cylinder.material);
-	free_strs(split);
 	cylinder.radius /= 2;
 	cylinder.axis = vec3_normalize(cylinder.axis);
 	data->scene->cylinders[data->scene->cy_i++] = cylinder;
-	return (1);
+	return (free_strs(split), 1);
 }

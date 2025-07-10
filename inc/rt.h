@@ -6,51 +6,52 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 16:56:42 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 14:15:05 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
 
-# include "gnl.h"
 # include "color.h"
 # include "ft_math.h"
+# include "gnl.h"
 # include "ray.h"
 # include "vec3.h"
-
 # include <float.h>
 # include <math.h>
+# include <mlx.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <mlx.h>
 
 # define PI 3.14159265358979323846
 
 // ======================= Color =======================
 typedef struct s_color
 {
-	int r, g, b;
+	int				r;
+	int				g;
+	int				b;
 }					t_color;
 
 // ======================= Material =======================
 typedef struct s_material
 {
-	t_color color;    // Base color
-	double ambient;   // Ambient reflection coefficient (0.0 to 1.0)
-	double diffuse;   // Diffuse reflection coefficient (0.0 to 1.0)
-	double specular;  // Specular reflection coefficient (0.0 to 1.0)
-	double shininess; // Shininess exponent for specular highlights
+	t_color			color;
+	double			ambient;
+	double			diffuse;
+	double			specular;
+	double			shininess;
 }					t_material;
 
 typedef struct s_hit
 {
-	double		t;
-	t_vec3		point;
-	t_vec3		normal;
-	t_material	material;
-	int			hit;
-}	t_hit;
+	double			t;
+	t_vec3			point;
+	t_vec3			normal;
+	t_material		material;
+	int				hit;
+}					t_hit;
 
 // ======================= Sphere =======================
 typedef struct s_sphere
@@ -64,7 +65,7 @@ typedef struct s_sphere
 typedef struct s_cylinder
 {
 	t_vec3			center;
-	t_vec3 axis; // Normalized direction vector
+	t_vec3			axis;
 	double			radius;
 	double			height;
 	t_material		material;
@@ -73,35 +74,35 @@ typedef struct s_cylinder
 // ======================= Plane =======================
 typedef struct s_plane
 {
-	t_vec3 point;  // A point on the plane
-	t_vec3 normal; // Normalized normal vector
+	t_vec3			point;
+	t_vec3			normal;
 	t_material		material;
 }					t_plane;
 
 // ======================= Lighting =======================
 typedef struct s_ambient_light
 {
-	double intensity; // Ambient light intensity (0.0 to 1.0)
-	t_color color;    // Ambient light color
+	double			intensity;
+	t_color			color;
 }					t_ambient_light;
 
 typedef struct s_point_light
 {
-	t_vec3 position;  // Light position in 3D space
-	double intensity; // Light intensity
-	t_color color;    // Light color
+	t_vec3			position;
+	double			intensity;
+	t_color			color;
 }					t_point_light;
 
 // ======================= Camera =======================
 typedef struct s_camera
 {
-	t_vec3	P;   // Position
-	t_vec3	D;   // Direction (normalized)
-	double	fov; // Horizontal field of view in radians
-	t_vec3	dir_forward;
-	t_vec3	dir_right;
-	t_vec3	dir_up;
-	t_vec3	foc_point;
+	t_vec3			p;
+	t_vec3			d;
+	double			fov;
+	t_vec3			dir_forward;
+	t_vec3			dir_right;
+	t_vec3			dir_up;
+	t_vec3			foc_point;
 }					t_camera;
 
 typedef struct s_camera_view
@@ -112,7 +113,7 @@ typedef struct s_camera_view
 	t_vec3			pixel00;
 	t_vec3			pixel_delta_u;
 	t_vec3			pixel_delta_v;
-}	t_camera_view;
+}					t_camera_view;
 
 // ======================= Scene Data Structure =======================
 typedef struct s_scene
@@ -147,14 +148,13 @@ typedef struct s_scene
 	int				height;
 }					t_scene;
 
-typedef struct  s_data
+typedef struct s_data
 {
-	void	*mlx;
-	void	*mlx_win;
-	t_scene	*scene;
+	void			*mlx;
+	void			*mlx_win;
+	t_scene			*scene;
 
-}   t_data;
-
+}					t_data;
 
 // ======================= Function Declarations =======================
 
@@ -163,19 +163,22 @@ t_scene				*create_scene(void);
 void				free_scene(t_scene *scene);
 
 // Ray tracing functions
-void	IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1, double *t2);
-t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t);
-t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres, t_hit closest_hit);
+void				IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1,
+						double *t2);
+t_hit				get_sphere_hit(t_ray ray, t_sphere sphere, double t);
+t_hit				hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
+						t_hit closest_hit);
 
-void	IntersectRayCylinder(t_ray ray,t_cylinder cylinder, double *t1, double *t2);
-t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
-t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders, t_hit closest_hit);
+void				IntersectRayCylinder(t_ray ray, t_cylinder cylinder,
+						double *t1, double *t2);
+t_hit				get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
+t_hit				hit_cylinders(t_ray ray, int num_cylinders,
+						t_cylinder *cylinders, t_hit closest_hit);
 
-void				IntersectRayPlane(t_ray ray, t_plane plane,
-						double *t);
-t_hit	get_plane_hit(t_ray ray, t_plane plane, double t);
-t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes, t_hit closest_hit);
-
+void				IntersectRayPlane(t_ray ray, t_plane plane, double *t);
+t_hit				get_plane_hit(t_ray ray, t_plane plane, double t);
+t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
+						t_hit closest_hit);
 
 t_color				TraceRay(t_ray ray, t_scene *scene);
 
@@ -202,9 +205,34 @@ int					parse_rt_file(const char *filename, t_scene *scene);
 // Error
 int					print_error(char *msg);
 
-//Utils
+// Utils
 int					td_len(char **td);
 
-# include "parsing.h"
-# include "print.h"
+// Print functions
+void				print_xyz(t_vec3 origin);
+void				print_rgb(t_color color);
+int					print_2d_array(char **arr);
+int					print_data(t_data data);
+void				print_pl(t_plane *planes, int num_planes);
+void				print_sp(t_sphere *spheres, int sp_count);
+void				print_cy(t_cylinder *cylinders, int num_cylinders);
+void				print_l(t_point_light *lights, int num_lights);
+
+// Parsing functions
+int					parse_ambient(char *line, t_ambient_light *ambient);
+int					parse_camera(char *line, t_camera *camera);
+int					parse_light(char *line, t_data *data);
+int					parse_sphere(char *line, t_data *data);
+int					parse_plane(char *line, t_data *data);
+int					parse_cylinder(char *line, t_data *data);
+int					parse_rgb(char *line, t_color *color);
+int					parse_xyz(char *line, t_vec3 *vec, int is_vector);
+int					parse_material_i(const char *spc, const char *mir,
+						t_material *mat);
+int					parser(char *filename, t_data *data);
+void				count_onl(char *filename, t_data *data);
+int					check_range(float value, float min, float max);
+int					parse_ratio(char *line, t_scene *scene);
+void				init_mat(t_material *mat);
+
 #endif

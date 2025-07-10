@@ -99,8 +99,6 @@ static int	check_plane_shadows(t_ray shadow_ray,
 int	is_in_shadow(t_vec3 hit_point, t_vec3 light_direction, double light_distance, t_scene *scene)
 {
 	t_ray	shadow_ray;
-	// t_vec3	shadow_ray_origin;
-	// t_vec3	shadow_ray_direction;
 
 	ft_bzero(&shadow_ray, sizeof(t_ray));
 	shadow_ray.origin = hit_point;
