@@ -36,26 +36,19 @@ SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(PARSING)/parser_utils.c $(PARSING)/parser.c $(PARSING)/material_parser.c \
 		$(PARSING)/ambient_parser.c $(PARSING)/light_parser.c \
 		$(PARSING)/camera_parser.c $(PARSING)/sphere_parser.c $(PARSING)/cylinder_parser.c \
-		$(PARSING)/plane_parser.c $(UTILS)/print.c $(PARSING)/ratio_parser.c
+		$(PARSING)/plane_parser.c $(UTILS)/print.c $(PARSING)/ratio_parser.c \
+		$(PARSING)/init_scene.c
 OBJS = $(SRCS:.c=.o)
-
-# BOX_SRCS = $(DEFAULT)/main_box.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
-# BOX_OBJS = $(BOX_SRCS:.c=.o)
-
-# PIPE_SRCS = $(DEFAULT)/main_pipe.c $(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c $(VEC3)/vec3.c $(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c
-# PIPE_OBJS = $(PIPE_SRCS:.c=.o)
 
 # Compiler
 CC = cc
 
 # Executable names
 NAME = rt
-BOX_NAME = rt_box
-PIPE_NAME = rt_pipe
 
 # Rules
-all: $(NAME) #$(BOX_NAME) $(PIPE_NAME)
-	 @echo "\033[32m[$(NAME), $(BOX_NAME), and $(PIPE_NAME) are ready for use]\033[0m"
+all: $(NAME)
+	 @echo "\033[32m[$(NAME) is ready for use]\033[0m"
 
 $(NAME): $(MLX_LIB) $(OBJS)  $(LIBFT)
 	@echo "$(NAME) compiling..."
@@ -93,7 +86,7 @@ clean:
 
 # Clean object files and executable
 fclean: clean
-	@rm -f $(NAME) $(BOX_NAME) $(PIPE_NAME)
+	@rm -f $(NAME)
 	@$(MAKE) -C $(LIBFT_PATH) fclean
 	# @$(MAKE) -C $(MLX_PATH) fclean
 	@echo "\033[35m[Fully cleaned up]\033[0m"

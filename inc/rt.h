@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 14:15:05 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 17:37:47 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,5 +234,10 @@ void				count_onl(char *filename, t_data *data);
 int					check_range(float value, float min, float max);
 int					parse_ratio(char *line, t_scene *scene);
 void				init_mat(t_material *mat);
+int					alloc_sp(t_data *data);
+int					alloc_l(t_data *data);
+int					alloc_cy(t_data *data);
+int					alloc_pl(t_data *data);
+int					init_scene(char *filename, t_data *data);
 
 #endif

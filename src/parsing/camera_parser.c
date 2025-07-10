@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 14:10:21 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 17:34:40 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@ int	parse_camera(char *line, t_camera *camera)
 	split = ft_split(line, " \t\n");
 	if (!split || !*split)
 		return (0);
-	if (ft_strslen(split) != 4 || !parse_xyz(split[1], &camera->p, 0) ||
-		!parse_xyz(split[2], &camera->d, 1) ||
-		!ft_atof_vali(split[3], &camera->fov) ||
-		!check_range(camera->fov, 0, 180))
+	if (ft_strslen(split) != 4 || !parse_xyz(split[1], &camera->p, 0)
+		|| !parse_xyz(split[2], &camera->d, 1) || !ft_atof_vali(split[3],
+			&camera->fov) || !check_range(camera->fov, 0, 180))
 		return (free_strs(split), 0);
 	camera->fov = camera->fov * (PI / 180.0);
 	return (free_strs(split), 1);

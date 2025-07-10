@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:37:25 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:17:42 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 17:35:06 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ void	count_onl(char *filename, t_data *data)
 	if (fd == -1)
 		return (ft_putstr_fd("INVALID PATH\n", 2));
 	line = gnl(fd);
-	while(line)
+	while (line)
 	{
-		if(line[0] == 'l')
+		if (line[0] == 'l')
 			data->scene->num_lights++;
-		if(line[0] == 'p' && line[1] && line[1] == 'l')
+		if (line[0] == 'p' && line[1] && line[1] == 'l')
 			data->scene->num_planes++;
-		if(line[0] == 's' && line[1] && line[1] == 'p')
+		if (line[0] == 's' && line[1] && line[1] == 'p')
 			data->scene->num_spheres++;
-		if(line[0] == 'c' && line[1] && line[1] == 'y')
+		if (line[0] == 'c' && line[1] && line[1] == 'y')
 			data->scene->num_cylinders++;
 		free(line);
 		line = NULL;
