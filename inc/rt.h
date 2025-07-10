@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:37:47 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/10 18:12:18 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,8 @@ t_color				color_multiply(t_color a, t_color b);
 t_color				color_scale(t_color color, double factor);
 t_color				color_add(t_color a, t_color b);
 t_color				color_clamp(t_color color);
+int					is_in_shadow(t_vec3 hit_point, t_vec3 light_direction,
+						double light_distance, t_scene *scene);
 
 // Camera functions
 t_camera_view		setup_camera(t_camera camera, t_scene *scene);

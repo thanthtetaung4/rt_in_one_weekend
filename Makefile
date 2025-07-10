@@ -37,7 +37,7 @@ SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(PARSING)/ambient_parser.c $(PARSING)/light_parser.c \
 		$(PARSING)/camera_parser.c $(PARSING)/sphere_parser.c $(PARSING)/cylinder_parser.c \
 		$(PARSING)/plane_parser.c $(UTILS)/print.c $(PARSING)/ratio_parser.c \
-		$(PARSING)/init_scene.c
+		$(PARSING)/init_scene.c $(UTILS)/shadow_utils.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler

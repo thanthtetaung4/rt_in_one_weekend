@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hit_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/10 17:48:09 by taung             #+#    #+#             */
+/*   Updated: 2025/07/10 17:48:11 by taung            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
-t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres, t_hit closest_hit)
+t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
+		t_hit closest_hit)
 {
 	int		i;
 	double	t1;
@@ -19,7 +32,8 @@ t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres, t_hit closest_h
 	return (closest_hit);
 }
 
-t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders, t_hit closest_hit)
+t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders,
+		t_hit closest_hit)
 {
 	int		i;
 	double	t1;
@@ -38,7 +52,8 @@ t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders, t_hit c
 	return (closest_hit);
 }
 
-t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes, t_hit closest_hit)
+t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes,
+		t_hit closest_hit)
 {
 	int		i;
 	double	t1;
