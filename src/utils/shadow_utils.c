@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shadow_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 18:11:42 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 18:11:57 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	check_sphere_shadows(t_ray shadow_ray, double light_distance,
 	i = 0;
 	while (i < scene->num_spheres)
 	{
-		IntersectRaySphere(shadow_ray, scene->spheres[i], &t1, &t2);
+		intersect_sphere(shadow_ray, scene->spheres[i], &t1, &t2);
 		if (t1 > 0.001 && t1 < light_distance)
 			return (1);
 		if (t2 > 0.001 && t2 < light_distance)
@@ -42,7 +42,7 @@ static int	check_cylinder_shadows(t_ray shadow_ray, double light_distance,
 	i = 0;
 	while (i < scene->num_cylinders)
 	{
-		IntersectRayCylinder(shadow_ray, scene->cylinders[i], &t1, &t2);
+		intersect_cylinder(shadow_ray, scene->cylinders[i], &t1, &t2);
 		if (t1 > 0.001 && t1 < light_distance)
 			return (1);
 		if (t2 > 0.001 && t2 < light_distance)

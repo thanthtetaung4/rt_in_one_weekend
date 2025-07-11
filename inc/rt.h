@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 15:03:54 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,13 +174,13 @@ t_scene				*create_scene(void);
 void				free_scene(t_scene *scene);
 
 // Ray tracing functions
-void				IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1,
+void				intersect_sphere(t_ray ray, t_sphere sphere, double *t1,
 						double *t2);
 t_hit				get_sphere_hit(t_ray ray, t_sphere sphere, double t);
 t_hit				hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
 						t_hit closest_hit);
 
-void				IntersectRayCylinder(t_ray ray, t_cylinder cylinder,
+void				intersect_cylinder(t_ray ray, t_cylinder cylinder,
 						double *t1, double *t2);
 t_hit				get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
 t_hit				hit_cylinders(t_ray ray, int num_cylinders,
@@ -191,7 +191,7 @@ t_hit				get_plane_hit(t_ray ray, t_plane plane, double t);
 t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
 						t_hit closest_hit);
 
-t_color				TraceRay(t_ray ray, t_scene *scene);
+t_color				trace_ray(t_ray ray, t_scene *scene);
 
 // Lighting functions
 t_color				calculate_lighting(t_hit hit, t_vec3 view_direction,

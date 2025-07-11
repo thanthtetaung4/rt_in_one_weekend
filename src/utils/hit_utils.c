@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:48:09 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:48:11 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
 	i = 0;
 	while (i < num_spheres)
 	{
-		IntersectRaySphere(ray, spheres[i], &t1, &t2);
+		intersect_sphere(ray, spheres[i], &t1, &t2);
 		if (t1 >= ray.t_min && t1 <= ray.t_max && t1 < closest_hit.t)
 			closest_hit = get_sphere_hit(ray, spheres[i], t1);
 		if (t2 >= ray.t_min && t2 <= ray.t_max && t2 < closest_hit.t)
@@ -42,7 +42,7 @@ t_hit	hit_cylinders(t_ray ray, int num_cylinders, t_cylinder *cylinders,
 	i = 0;
 	while (i < num_cylinders)
 	{
-		IntersectRayCylinder(ray, cylinders[i], &t1, &t2);
+		intersect_cylinder(ray, cylinders[i], &t1, &t2);
 		if (t1 >= ray.t_min && t1 <= ray.t_max && t1 < closest_hit.t)
 			closest_hit = get_cylinder_hit(ray, cylinders[i], t1);
 		if (t2 >= ray.t_min && t2 <= ray.t_max && t2 < closest_hit.t)

@@ -1,30 +1,18 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ray_utils.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 14:25:36 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 15:04:13 by taung            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "rt.h"
 
-void	IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
+void	intersect_sphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 {
-	t_vec3	CO;
+	t_vec3	co;
 	double	a;
 	double	b;
-	double	c;
 	double	discriminant;
 
-	CO = vec3_sub(ray.origin, sphere.center);
+	co = vec3_sub(ray.origin, sphere.center);
 	a = vec3_dot(ray.dir, ray.dir);
-	b = 2 * vec3_dot(CO, ray.dir);
-	c = vec3_dot(CO, CO) - sphere.radius * sphere.radius;
-	discriminant = b * b - 4 * a * c;
+	b = 2 * vec3_dot(co, ray.dir);
+	discriminant = b * b - 4 * a * (vec3_dot(co, co) - sphere.radius
+			* sphere.radius);
 	if (discriminant < 0)
 	{
 		*t1 = DBL_MAX;
@@ -88,10 +76,10 @@ static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder,
 	}
 }
 
-void	IntersectRayCylinder(t_ray ray, t_cylinder cylinder, double *t1,
+void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1,
 		double *t2)
 {
-	t_vec3	CO;
+	t_vec3	co;
 	double	D_dot_axis;
 	double	CO_dot_axis;
 	t_vec3	D_perp;
@@ -106,11 +94,11 @@ void	IntersectRayCylinder(t_ray ray, t_cylinder cylinder, double *t1,
 	double	y1;
 	double	y2;
 
-	CO = vec3_sub(ray.origin, cylinder.center);
+	co = vec3_sub(ray.origin, cylinder.center);
 	D_dot_axis = vec3_dot(ray.dir, cylinder.axis);
-	CO_dot_axis = vec3_dot(CO, cylinder.axis);
+	CO_dot_axis = vec3_dot(co, cylinder.axis);
 	D_perp = vec3_sub(ray.dir, vec3_scale(cylinder.axis, D_dot_axis));
-	CO_perp = vec3_sub(CO, vec3_scale(cylinder.axis, CO_dot_axis));
+	CO_perp = vec3_sub(co, vec3_scale(cylinder.axis, CO_dot_axis));
 	a = vec3_dot(D_perp, D_perp);
 	b = 2 * vec3_dot(D_perp, CO_perp);
 	c = vec3_dot(CO_perp, CO_perp) - cylinder.radius * cylinder.radius;
@@ -204,7 +192,7 @@ t_hit	get_plane_hit(t_ray ray, t_plane plane, double t)
 	return (hit);
 }
 
-t_hit	TraceRayHit(t_ray ray, t_scene *scene)
+t_hit	trace_ray_hit(t_ray ray, t_scene *scene)
 {
 	t_hit	closest_hit;
 	int		i;
@@ -222,12 +210,12 @@ t_hit	TraceRayHit(t_ray ray, t_scene *scene)
 	return (closest_hit);
 }
 
-t_color	TraceRay(t_ray ray, t_scene *scene)
+t_color	trace_ray(t_ray ray, t_scene *scene)
 {
 	t_hit	hit;
 	t_vec3	view_direction;
 
-	hit = TraceRayHit(ray, scene);
+	hit = trace_ray_hit(ray, scene);
 	if (!hit.hit)
 		return (scene->background);
 	view_direction = vec3_normalize(vec3_sub(ray.origin, hit.point));

@@ -27,7 +27,7 @@ static void	render_to_mlx_image(t_scene *scene, t_data *data)
 							- xy[1])));
 			ray.dir = vec3_normalize(vec3_sub(pixel, scene->camera.p));
 			mlx_pixel_put(data->mlx, data->mlx_win, xy[0], xy[1],
-				color_to_mlx(TraceRay(ray, scene)));
+				color_to_mlx(trace_ray(ray, scene)));
 			xy[0]++;
 		}
 		xy[1]++;
@@ -38,7 +38,7 @@ static int	close_hook(t_data *data)
 {
 	if (data->mlx && data->mlx_win)
 	{	mlx_destroy_window(data->mlx, data->mlx_win);
-		mlx_destroy_display(data->mlx);
+		// mlx_destroy_display(data->mlx);
 		free(data->mlx);
 		free_scene(data->scene);
 		exit(0);
@@ -70,7 +70,7 @@ int	main(int argc, char **argv)
 	if (!parser(argv[1], &data))
 	{
 		free_scene(data.scene);
-		mlx_destroy_display(data.mlx);
+		// mlx_destroy_display(data.mlx);
 		free(data.mlx);
 		return (print_error("Error: Failed to parse input file\n"));
 	}
@@ -80,7 +80,7 @@ int	main(int argc, char **argv)
 	if (!data.mlx_win)
 	{
 		free_scene(data.scene);
-		mlx_destroy_display(data.mlx);
+		// mlx_destroy_display(data.mlx);
 		free(data.mlx);
 		return (print_error("Error: Failed to create window\n"));
 	}
