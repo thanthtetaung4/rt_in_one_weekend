@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 03:27:52 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 04:17:37 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	parse_cylinder(char *line, t_data *data)
 	if (!(ft_strslen(split) >= 6 && ft_strslen(split) <= 8)
 		|| !parse_xyz(split[1], &cylinder.center, 0) || !parse_xyz(split[2],
 			&cylinder.axis, 0) || !ft_atof_vali(split[3], &cylinder.radius)
-		|| cylinder.radius <= 0 || !ft_atof_vali(split[4], &cylinder.half_height)
-		|| cylinder.half_height <= 0 || !parse_rgb(split[5],
-			&cylinder.material.color))
+		|| cylinder.radius <= 0 || !ft_atof_vali(split[4],
+			&cylinder.half_height) || cylinder.half_height <= 0
+		|| !parse_rgb(split[5], &cylinder.material.color))
 		return (free_strs(split), 0);
 	if (split[6])
 	{
@@ -37,7 +37,6 @@ int	parse_cylinder(char *line, t_data *data)
 	cylinder.radius /= 2.0;
 	cylinder.axis = vec3_normalize(cylinder.axis);
 	cylinder.half_height /= 2.0;
-	printf("\t\t\t%f\n", cylinder.half_height);
 	data->scene->cylinders[data->scene->cy_i++] = cylinder;
 	return (free_strs(split), 1);
 }

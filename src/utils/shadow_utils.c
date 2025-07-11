@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 18:11:42 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 04:09:19 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static int	check_plane_shadows(t_ray shadow_ray, double light_distance,
 	i = 0;
 	while (i < scene->num_planes)
 	{
-		IntersectRayPlane(shadow_ray, scene->planes[i], &t);
+		intersect_plane(shadow_ray, scene->planes[i], &t);
 		if (t > 0.001 && t < light_distance)
 			return (1);
 		i++;

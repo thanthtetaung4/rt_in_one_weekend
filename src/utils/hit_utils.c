@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:48:09 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 04:09:19 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes,
 	i = 0;
 	while (i < num_planes)
 	{
-		IntersectRayPlane(ray, planes[i], &t1);
+		intersect_plane(ray, planes[i], &t1);
 		if (t1 >= ray.t_min && t1 <= ray.t_max && t1 < closest_hit.t)
 			closest_hit = get_plane_hit(ray, planes[i], t1);
 		i++;

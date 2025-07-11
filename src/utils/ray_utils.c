@@ -23,128 +23,69 @@ void	intersect_sphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 	*t2 = (-b - sqrt(discriminant)) / (2 * a);
 }
 
-// void	do_smth_on_hit(t_ray ray, t_cylinder cylinder, t_quadratic *q, double denom, t_vec3 cap_center)
-// {
-// 	t_vec3	hit_point;
-// 	t_vec3	to_hit;
-// 	double	t_cap;
-
-// 	if (ft_fabs(denom) > 1e-6)
-// 	{
-// 		t_cap = vec3_dot(vec3_sub(cap_center, ray.origin), cylinder.axis) / denom;
-// 		if (t_cap > 0)
-// 		{
-// 			hit_point = vec3_add(ray.origin, vec3_scale(ray.dir, t_cap));
-// 			to_hit = vec3_sub(hit_point, cap_center);
-// 			if (vec3_dot(to_hit, to_hit) <= cylinder.radius * cylinder.radius)
-// 			{
-// 				if (t_cap < q->t1)
-// 					q->t1 = t_cap;
-// 				else if (t_cap < q->t2)
-// 					q->t2 = t_cap;
-// 			}
-// 		}
-// 	}
-// }
-
-// static void	check_cylinder_caps(t_ray ray, t_cylinder cylinder,
-// 		t_quadratic	*q)
-// {
-// 	t_vec3	top_center;
-// 	t_vec3	bottom_center;
-// 	double	denom;
-
-// 	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
-// 				cylinder.half_height));
-// 	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,
-// 				cylinder.half_height));
-// 	denom = vec3_dot(ray.dir, cylinder.axis);
-// 	do_smth_on_hit(ray, cylinder, q, denom, top_center);
-// 	do_smth_on_hit(ray, cylinder, q, denom, bottom_center);
-// }
-
-
-
-
-
-
-static void	check_cylinder_caps(t_ray ray, t_cylinder cylinder,
-		double *t1, double *t2)
+void	intersect_cyl_cap(t_ray ray, t_cylinder cylinder, t_quadratic *q,
+		t_vec3 cap_center)
 {
-	t_vec3	top_center;
-	t_vec3	bottom_center;
-	double	denom_top;
-	double	denom_bottom;
-	double	t_top;
-	double	t_bottom;
 	t_vec3	hit_point;
 	t_vec3	to_hit;
+	double	t_cap;
+	double	denom;
 
-	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
-				cylinder.half_height / 2.0));
-	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,
-				cylinder.half_height / 2.0));
-	denom_top = vec3_dot(ray.dir, cylinder.axis);
-	if (ft_fabs(denom_top) > 1e-6)
+	denom = vec3_dot(ray.dir, cylinder.axis);
+	if (ft_fabs(denom) > 1e-6)
 	{
-		t_top = vec3_dot(vec3_sub(top_center, ray.origin), cylinder.axis) / denom_top;
-		if (t_top > 0)
+		t_cap = vec3_dot(vec3_sub(cap_center, ray.origin), cylinder.axis)
+			/ denom;
+		if (t_cap > 0)
 		{
-			hit_point = vec3_add(ray.origin, vec3_scale(ray.dir, t_top));
-			to_hit = vec3_sub(hit_point, top_center);
+			hit_point = vec3_add(ray.origin, vec3_scale(ray.dir, t_cap));
+			to_hit = vec3_sub(hit_point, cap_center);
 			if (vec3_dot(to_hit, to_hit) <= cylinder.radius * cylinder.radius)
 			{
-				if (t_top < *t1)
-					*t1 = t_top;
-				else if (t_top < *t2)
-					*t2 = t_top;
-			}
-		}
-	}
-	denom_bottom = vec3_dot(ray.dir, cylinder.axis);
-	if (ft_fabs(denom_bottom) > 1e-6)
-	{
-		t_bottom = vec3_dot(vec3_sub(bottom_center, ray.origin), cylinder.axis)
-			/ denom_bottom;
-		if (t_bottom > 0)
-		{
-			hit_point = vec3_add(ray.origin, vec3_scale(ray.dir, t_bottom));
-			to_hit = vec3_sub(hit_point, bottom_center);
-			if (vec3_dot(to_hit, to_hit) <= cylinder.radius * cylinder.radius)
-			{
-				if (t_bottom < *t1)
-					*t1 = t_bottom;
-				else if (t_bottom < *t2)
-					*t2 = t_bottom;
+				if (t_cap < q->t1)
+					q->t1 = t_cap;
+				else if (t_cap < q->t2)
+					q->t2 = t_cap;
 			}
 		}
 	}
 }
 
+static void	check_cylinder_caps(t_quadratic *q, t_ray ray, t_cylinder cylinder)
+{
+	t_vec3	top_center;
+	t_vec3	bottom_center;
+
+	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
+				cylinder.half_height));
+	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,
+				cylinder.half_height));
+	intersect_cyl_cap(ray, cylinder, q, top_center);
+	intersect_cyl_cap(ray, cylinder, q, bottom_center);
+}
+
 static t_quadratic	setup_cylinder_quadratic(t_ray ray, t_cylinder cyl,
-	double *dot_axis_d, double *dot_axis_co)
+		double *dot_axis_d, double *dot_axis_co)
 {
 	t_quadratic	q;
 	t_vec3		d_prep;
 	t_vec3		co_prep;
+	double		sqrt_disc;
 
 	q.co = vec3_sub(ray.origin, cyl.center);
 	*dot_axis_d = vec3_dot(ray.dir, cyl.axis);
 	*dot_axis_co = vec3_dot(q.co, cyl.axis);
-
 	d_prep = vec3_sub(ray.dir, vec3_scale(cyl.axis, *dot_axis_d));
 	co_prep = vec3_sub(q.co, vec3_scale(cyl.axis, *dot_axis_co));
-
 	q.a = vec3_dot(d_prep, d_prep);
 	q.b = 2 * vec3_dot(d_prep, co_prep);
 	q.c = vec3_dot(co_prep, co_prep) - cyl.radius * cyl.radius;
 	q.discriminant = q.b * q.b - 4 * q.a * q.c;
 	q.t1 = DBL_MAX;
 	q.t2 = DBL_MAX;
-
 	if (q.discriminant >= 0)
 	{
-		double sqrt_disc = sqrt(q.discriminant);
+		sqrt_disc = sqrt(q.discriminant);
 		q.t1 = (-q.b - sqrt_disc) / (2 * q.a);
 		q.t2 = (-q.b + sqrt_disc) / (2 * q.a);
 	}
@@ -152,7 +93,7 @@ static t_quadratic	setup_cylinder_quadratic(t_ray ray, t_cylinder cyl,
 }
 
 static void	validate_cylinder_sides(t_quadratic *q, t_cylinder cyl,
-	double d_dot_axis, double co_dot_axis)
+		double d_dot_axis, double co_dot_axis)
 {
 	double	y1;
 	double	y2;
@@ -171,7 +112,8 @@ static void	validate_cylinder_sides(t_quadratic *q, t_cylinder cyl,
 		q->t2 = t2_inf;
 }
 
-void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1, double *t2)
+void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1,
+		double *t2)
 {
 	t_quadratic	q;
 	double		d_dot_axis;
@@ -185,9 +127,9 @@ void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1, double *t2)
 		return ;
 	}
 	validate_cylinder_sides(&q, cylinder, d_dot_axis, co_dot_axis);
+	check_cylinder_caps(&q, ray, cylinder);
 	*t1 = q.t1;
 	*t2 = q.t2;
-	check_cylinder_caps(ray, cylinder, t1, t2);
 }
 
 // void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1,
@@ -237,7 +179,7 @@ void	intersect_cylinder(t_ray ray, t_cylinder cylinder, double *t1, double *t2)
 // 	check_cylinder_caps(ray.origin, ray.dir, cylinder, t1, t2);
 // }
 
-void	IntersectRayPlane(t_ray ray, t_plane plane, double *t)
+void	intersect_plane(t_ray ray, t_plane plane, double *t)
 {
 	double	denom;
 	t_vec3	to_plane;
@@ -274,7 +216,7 @@ t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t)
 	data.hit.point = vec3_add(ray.origin, vec3_scale(ray.dir, t));
 	data.to_center = vec3_sub(data.hit.point, cylinder.center);
 	data.projection = vec3_dot(data.to_center, cylinder.axis);
-	data.half_height = cylinder.half_height / 2.0;
+	data.half_height = cylinder.half_height;
 	data.top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
 				data.half_height));
 	data.bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,

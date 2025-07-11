@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 02:39:16 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 04:09:19 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ t_hit				get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
 t_hit				hit_cylinders(t_ray ray, int num_cylinders,
 						t_cylinder *cylinders, t_hit closest_hit);
 
-void				IntersectRayPlane(t_ray ray, t_plane plane, double *t);
+void				intersect_plane(t_ray ray, t_plane plane, double *t);
 t_hit				get_plane_hit(t_ray ray, t_plane plane, double t);
 t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
 						t_hit closest_hit);
