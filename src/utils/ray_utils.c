@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 14:25:36 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 14:30:34 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 15:04:13 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 	*t2 = (-b - sqrt(discriminant)) / (2 * a);
 }
 
-static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder, double *t1, double *t2)
+static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder,
+		double *t1, double *t2)
 {
 	t_vec3	top_center;
 	t_vec3	bottom_center;
@@ -46,8 +47,10 @@ static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder, double 
 	t_vec3	hit_point;
 	t_vec3	to_hit;
 
-	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis, cylinder.height / 2.0));
-	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis, cylinder.height / 2.0));
+	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
+				cylinder.height / 2.0));
+	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,
+				cylinder.height / 2.0));
 	denom_top = vec3_dot(D, cylinder.axis);
 	if (ft_fabs(denom_top) > 1e-6)
 	{
@@ -68,7 +71,8 @@ static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder, double 
 	denom_bottom = vec3_dot(D, cylinder.axis);
 	if (ft_fabs(denom_bottom) > 1e-6)
 	{
-		t_bottom = vec3_dot(vec3_sub(bottom_center, O), cylinder.axis) / denom_bottom;
+		t_bottom = vec3_dot(vec3_sub(bottom_center, O), cylinder.axis)
+			/ denom_bottom;
 		if (t_bottom > 0)
 		{
 			hit_point = vec3_add(O, vec3_scale(D, t_bottom));
@@ -84,7 +88,8 @@ static void	check_cylinder_caps(t_vec3 O, t_vec3 D, t_cylinder cylinder, double 
 	}
 }
 
-void	IntersectRayCylinder(t_ray ray, t_cylinder cylinder, double *t1, double *t2)
+void	IntersectRayCylinder(t_ray ray, t_cylinder cylinder, double *t1,
+		double *t2)
 {
 	t_vec3	CO;
 	double	D_dot_axis;
@@ -161,33 +166,30 @@ t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t)
 
 t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t)
 {
-	t_hit	hit;
-	t_vec3		to_center;
-	double		projection;
-	double		half_height;
-	t_vec3		top_center;
-	t_vec3		bottom_center;
-	t_vec3		normal;
+	t_gch_calc	data;
 
-	hit.t = t;
-	hit.point = vec3_add(ray.origin, vec3_scale(ray.dir, t));
-	to_center = vec3_sub(hit.point, cylinder.center);
-	projection = vec3_dot(to_center, cylinder.axis);
-	half_height = cylinder.height / 2.0;
-	top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis, half_height));
-	bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis, half_height));
-	if (ft_fabs(projection - half_height) < 0.001)
-		hit.normal = cylinder.axis;
-	else if (ft_fabs(projection + half_height) < 0.001)
-		hit.normal = vec3_scale(cylinder.axis, -1);
+	data.hit.t = t;
+	data.hit.point = vec3_add(ray.origin, vec3_scale(ray.dir, t));
+	data.to_center = vec3_sub(data.hit.point, cylinder.center);
+	data.projection = vec3_dot(data.to_center, cylinder.axis);
+	data.half_height = cylinder.height / 2.0;
+	data.top_center = vec3_add(cylinder.center, vec3_scale(cylinder.axis,
+				data.half_height));
+	data.bottom_center = vec3_sub(cylinder.center, vec3_scale(cylinder.axis,
+				data.half_height));
+	if (ft_fabs(data.projection - data.half_height) < 0.001)
+		data.hit.normal = cylinder.axis;
+	else if (ft_fabs(data.projection + data.half_height) < 0.001)
+		data.hit.normal = vec3_scale(cylinder.axis, -1);
 	else
 	{
-		normal = vec3_sub(to_center, vec3_scale(cylinder.axis, projection));
-		hit.normal = vec3_normalize(normal);
+		data.normal = vec3_sub(data.to_center, vec3_scale(cylinder.axis,
+					data.projection));
+		data.hit.normal = vec3_normalize(data.normal);
 	}
-	hit.material = cylinder.material;
-	hit.hit = 1;
-	return (hit);
+	data.hit.material = cylinder.material;
+	data.hit.hit = 1;
+	return (data.hit);
 }
 
 t_hit	get_plane_hit(t_ray ray, t_plane plane, double t)
@@ -205,22 +207,25 @@ t_hit	get_plane_hit(t_ray ray, t_plane plane, double t)
 t_hit	TraceRayHit(t_ray ray, t_scene *scene)
 {
 	t_hit	closest_hit;
-	int			i;
-	double		t1;
-	double		t2;
+	int		i;
+	double	t1;
+	double	t2;
 
 	ft_bzero(&closest_hit, sizeof(t_hit));
 	closest_hit.t = DBL_MAX;
-	closest_hit = hit_spheres(ray, scene->num_spheres, scene->spheres, closest_hit);
-	closest_hit = hit_cylinders(ray, scene->num_cylinders, scene->cylinders, closest_hit);
-	closest_hit = hit_planes(ray, scene->num_planes, scene->planes, closest_hit);
+	closest_hit = hit_spheres(ray, scene->num_spheres, scene->spheres,
+			closest_hit);
+	closest_hit = hit_cylinders(ray, scene->num_cylinders, scene->cylinders,
+			closest_hit);
+	closest_hit = hit_planes(ray, scene->num_planes, scene->planes,
+			closest_hit);
 	return (closest_hit);
 }
 
 t_color	TraceRay(t_ray ray, t_scene *scene)
 {
 	t_hit	hit;
-	t_vec3		view_direction;
+	t_vec3	view_direction;
 
 	hit = TraceRayHit(ray, scene);
 	if (!hit.hit)

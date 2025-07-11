@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 14:31:11 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 15:03:54 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,17 @@ typedef struct s_data
 	t_scene			*scene;
 
 }					t_data;
+
+typedef struct s_gch_calc
+{
+	t_hit	hit;
+	t_vec3		to_center;
+	double		projection;
+	double		half_height;
+	t_vec3		top_center;
+	t_vec3		bottom_center;
+	t_vec3		normal;
+}	t_gch_calc;
 
 // ======================= Function Declarations =======================
 
