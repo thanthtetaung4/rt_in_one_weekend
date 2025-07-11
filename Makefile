@@ -30,14 +30,14 @@ PARSING = $(DEFAULT)/parsing
 
 SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(VEC3)/vec3.c $(VEC3)/vec3_ops.c $(VEC3)/vec3_scale.c \
-		$(UTILS)/color_utils.c $(UTILS)/math_utils.c $(UTILS)/render_utils.c \
+		$(UTILS)/color_utils.c $(UTILS)/math_utils.c \
 		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/hit_utils.c\
 		$(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c $(UTILS)/error_utils.c \
 		$(PARSING)/parser_utils.c $(PARSING)/parser.c $(PARSING)/material_parser.c \
 		$(PARSING)/ambient_parser.c $(PARSING)/light_parser.c \
 		$(PARSING)/camera_parser.c $(PARSING)/sphere_parser.c $(PARSING)/cylinder_parser.c \
-		$(PARSING)/plane_parser.c $(UTILS)/print.c $(PARSING)/ratio_parser.c \
-		$(PARSING)/init_scene.c $(UTILS)/shadow_utils.c
+		$(PARSING)/plane_parser.c $(UTILS)/print_obj.c $(UTILS)/print_world.c $(UTILS)/print_misc.c \
+		$(PARSING)/ratio_parser.c $(PARSING)/init_scene.c $(UTILS)/shadow_utils.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler

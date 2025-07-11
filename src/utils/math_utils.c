@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   math_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/11 14:18:00 by taung             #+#    #+#             */
+/*   Updated: 2025/07/11 14:19:29 by taung            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/rt.h"
 
 double	degrees_to_radians(double degrees)
@@ -7,6 +19,7 @@ double	degrees_to_radians(double degrees)
 
 double	ft_fabs(double x)
 {
-	return (x < 0) ? -x : x;
+	if (x < 0)
+		return (-x);
+	return (x);
 }
-

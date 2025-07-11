@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ray_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/11 14:25:36 by taung             #+#    #+#             */
+/*   Updated: 2025/07/11 14:30:34 by taung            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
 void	IntersectRaySphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
@@ -214,6 +226,5 @@ t_color	TraceRay(t_ray ray, t_scene *scene)
 	if (!hit.hit)
 		return (scene->background);
 	view_direction = vec3_normalize(vec3_sub(ray.origin, hit.point));
-	return (calculate_lighting(hit.point, hit.normal, view_direction,
-			hit.material, scene));
+	return (calculate_lighting(hit, view_direction, scene));
 }

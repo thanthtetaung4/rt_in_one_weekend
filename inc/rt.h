@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 18:12:18 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/11 14:31:11 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,7 @@ t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
 t_color				TraceRay(t_ray ray, t_scene *scene);
 
 // Lighting functions
-t_color				calculate_lighting(t_vec3 hit_point, t_vec3 normal,
-						t_vec3 view_direction, t_material material,
+t_color				calculate_lighting(t_hit hit, t_vec3 view_direction,
 						t_scene *scene);
 t_color				color_multiply(t_color a, t_color b);
 t_color				color_scale(t_color color, double factor);
@@ -218,7 +217,11 @@ int					print_data(t_data data);
 void				print_pl(t_plane *planes, int num_planes);
 void				print_sp(t_sphere *spheres, int sp_count);
 void				print_cy(t_cylinder *cylinders, int num_cylinders);
+void				print_pl(t_plane *planes, int num_planes);
+void				print_sp(t_sphere *spheres, int sp_count);
+void				print_cy(t_cylinder *cylinders, int num_cylinders);
 void				print_l(t_point_light *lights, int num_lights);
+void				print_mat(t_material mat);
 
 // Parsing functions
 int					parse_ambient(char *line, t_ambient_light *ambient);
