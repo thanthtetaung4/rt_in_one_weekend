@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_obj.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 14:21:45 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 14:25:01 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/12 03:28:44 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	print_cy(t_cylinder *cylinders, int num_cylinders)
 		printf(", ");
 		print_xyz(cylinders[i].axis);
 		printf(", radius - %f, height - %f, ", cylinders[i].radius,
-			cylinders[i].height);
+			cylinders[i].half_height * 2.0);
 		print_rgb(cylinders[i].material.color);
 		print_mat(cylinders[i].material);
 		printf("\n");

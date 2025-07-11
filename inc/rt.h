@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 22:14:01 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 02:39:16 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct s_cylinder
 	t_vec3			center;
 	t_vec3			axis;
 	double			radius;
-	double			height;
+	double			half_height;
 	t_material		material;
 }					t_cylinder;
 
@@ -158,7 +158,7 @@ typedef struct s_data
 
 typedef struct s_gch_calc
 {
-	t_hit	hit;
+	t_hit		hit;
 	t_vec3		to_center;
 	double		projection;
 	double		half_height;
@@ -166,6 +166,17 @@ typedef struct s_gch_calc
 	t_vec3		bottom_center;
 	t_vec3		normal;
 }	t_gch_calc;
+
+typedef struct s_quadratic
+{
+	double 	a;
+	double 	b;
+	double 	c;
+	double 	discriminant;
+	double 	t1;
+	double 	t2;
+	t_vec3	co;
+}	t_quadratic;
 
 // ======================= Function Declarations =======================
 
