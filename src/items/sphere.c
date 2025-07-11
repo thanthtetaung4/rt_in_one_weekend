@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 05:21:03 by aoo               #+#    #+#             */
-/*   Updated: 2025/07/12 05:21:04 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 05:50:08 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,23 @@
 
 void	intersect_sphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 {
-	t_vec3	co;
-	double	a;
-	double	b;
-	double	discriminant;
+	t_quadratic	q;
+	double		sqrt_discriminant;
 
-	co = vec3_sub(ray.origin, sphere.center);
-	a = vec3_dot(ray.dir, ray.dir);
-	b = 2 * vec3_dot(co, ray.dir);
-	discriminant = b * b - 4 * a * (vec3_dot(co, co) - sphere.radius
+	q.co = vec3_sub(ray.origin, sphere.center);
+	q.a = vec3_dot(ray.dir, ray.dir);
+	q.b = 2 * vec3_dot(q.co, ray.dir);
+	q.discriminant = q.b * q.b - 4 * q.a * (vec3_dot(q.co, q.co) - sphere.radius
 			* sphere.radius);
-	if (discriminant < 0)
+	if (q.discriminant < 0)
 	{
 		*t1 = DBL_MAX;
 		*t2 = DBL_MAX;
 		return ;
 	}
-	*t1 = (-b + sqrt(discriminant)) / (2 * a);
-	*t2 = (-b - sqrt(discriminant)) / (2 * a);
+	sqrt_discriminant = sqrt(q.discriminant);
+	*t1 = (-q.b + sqrt_discriminant) / (2 * q.a);
+	*t2 = (-q.b - sqrt_discriminant) / (2 * q.a);
 }
 
 t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t)
