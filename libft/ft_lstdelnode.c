@@ -6,14 +6,14 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 21:23:19 by aoo               #+#    #+#             */
-/*   Updated: 2025/05/12 20:37:33 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 05:41:18 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstdelnode(t_list **lst, void *data, \
-		int (*match)(void *, void *), void (*del)(void *))
+void	ft_lstdelnode(t_list **lst, void *data, int (*match)(void *, void *),
+		void (*del)(void *))
 {
 	t_list	*lst_pair[2];
 

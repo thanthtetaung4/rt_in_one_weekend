@@ -1,28 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ray.h                                              :+:      :+:    :+:   */
+/*   mlx_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 03:32:11 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 06:51:16 by aoo              ###   ########.fr       */
+/*   Created: 2025/07/12 05:31:55 by aoo               #+#    #+#             */
+/*   Updated: 2025/07/12 05:31:56 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RAY_H
-# define RAY_H
+#include "rt.h"
 
-# include "rt.h"
-
-typedef struct s_ray
+// Function to convert color to MLX format
+int	color_to_mlx(t_color color)
 {
-	t_vec3	origin;
-	t_vec3	dir;
-	double	t_min;
-	double	t_max;
-}	t_ray;
+	return ((color.r << 16) | (color.g << 8) | color.b);
+}
 
-t_ray	init_ray(t_vec3 origin, t_vec3 dir, double t_min, double t_max);
+int	close_hook(t_data *data)
+{
+	printf("You closed the window!\n");
+	free_data(data);
+	exit(0);
+	return (0);
+}
 
-#endif
+int	key_hook(int keycode, void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	if (keycode == 65307)
+		close_hook(data);
+	return (0);
+}

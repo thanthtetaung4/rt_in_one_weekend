@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   color_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:44:35 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 18:11:05 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/12 04:25:03 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/rt.h"
-
-void	rgbthex(t_rgb color, int *hex_color)
-{
-	*hex_color = ((int)color.x << 16) | ((int)color.y << 8) | (int)color.z;
-}
 
 t_color	color_multiply(t_color a, t_color b)
 {

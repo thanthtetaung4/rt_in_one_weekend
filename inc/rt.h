@@ -6,24 +6,23 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 04:09:19 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 05:35:13 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
 
-# include "color.h"
-# include "ft_math.h"
+# include "libft.h"
 # include "gnl.h"
-# include "ray.h"
 # include "vec3.h"
 # include <float.h>
 # include <math.h>
 # include <mlx.h>
 # include <stdio.h>
-# include <stdlib.h>
 
+# define WIDTH 800
+# define HEIGHT 600
 # define PI 3.14159265358979323846
 
 // ======================= Color =======================
@@ -78,6 +77,15 @@ typedef struct s_plane
 	t_vec3			normal;
 	t_material		material;
 }					t_plane;
+
+// ======================= Ray =======================
+typedef struct s_ray
+{
+	t_vec3			origin;
+	t_vec3			dir;
+	double			t_min;
+	double			t_max;
+}					t_ray;
 
 // ======================= Lighting =======================
 typedef struct s_ambient_light
@@ -158,33 +166,41 @@ typedef struct s_data
 
 typedef struct s_gch_calc
 {
-	t_hit		hit;
-	t_vec3		to_center;
-	double		projection;
-	double		half_height;
-	t_vec3		top_center;
-	t_vec3		bottom_center;
-	t_vec3		normal;
-}	t_gch_calc;
+	t_hit			hit;
+	t_vec3			to_center;
+	double			projection;
+	double			half_height;
+	t_vec3			top_center;
+	t_vec3			bottom_center;
+	t_vec3			normal;
+}					t_gch_calc;
 
 typedef struct s_quadratic
 {
-	double 	a;
-	double 	b;
-	double 	c;
-	double 	discriminant;
-	double 	t1;
-	double 	t2;
-	t_vec3	co;
-}	t_quadratic;
+	double			a;
+	double			b;
+	double			c;
+	double			discriminant;
+	double			t1;
+	double			t2;
+	t_vec3			co;
+}					t_quadratic;
 
 // ======================= Function Declarations =======================
 
+// Mlx control functions
+int					key_hook(int keycode, void *param);
+int					close_hook(t_data *data);
+int					color_to_mlx(t_color color);
+
 // Scene management functions
-t_scene				*create_scene(void);
+int					create_scene(char *file_name, t_data *data);
 void				free_scene(t_scene *scene);
 
 // Ray tracing functions
+void				render_to_mlx_image(t_scene *scene, t_data *data);
+t_ray				init_ray(t_vec3 origin, t_vec3 dir, double t_min,
+						double t_max);
 void				intersect_sphere(t_ray ray, t_sphere sphere, double *t1,
 						double *t2);
 t_hit				get_sphere_hit(t_ray ray, t_sphere sphere, double t);
@@ -229,7 +245,8 @@ int					parse_rt_file(const char *filename, t_scene *scene);
 int					print_error(char *msg);
 
 // Utils
-int					td_len(char **td);
+double				degrees_to_radians(double degrees);
+double				ft_fabs(double x);
 
 // Print functions
 void				print_xyz(t_vec3 origin);
@@ -267,4 +284,6 @@ int					alloc_cy(t_data *data);
 int					alloc_pl(t_data *data);
 int					init_scene(char *filename, t_data *data);
 
+// Free
+void				free_data(t_data *data);
 #endif

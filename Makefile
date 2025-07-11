@@ -27,11 +27,13 @@ UTILS = $(DEFAULT)/utils
 VEC3 = $(DEFAULT)/vec3
 GNL = $(DEFAULT)/gnl/gnl.c
 PARSING = $(DEFAULT)/parsing
+ITEMS = ${DEFAULT}/items
 
 SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(VEC3)/vec3.c $(VEC3)/vec3_ops.c $(VEC3)/vec3_scale.c \
-		$(UTILS)/color_utils.c $(UTILS)/math_utils.c \
-		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/hit_utils.c\
+		$(ITEMS)/sphere.c $(ITEMS)/plane.c $(ITEMS)/cylinder.c $(ITEMS)/cylinder_intersect.c \
+		$(UTILS)/mlx_utils.c $(UTILS)/color_utils.c \
+		$(UTILS)/camera_utils.c $(UTILS)/ray_utils.c $(UTILS)/math_utils.c \
 		$(UTILS)/lighting_utils.c $(UTILS)/scene_utils.c $(UTILS)/error_utils.c \
 		$(PARSING)/parser_utils.c $(PARSING)/parser.c $(PARSING)/material_parser.c \
 		$(PARSING)/ambient_parser.c $(PARSING)/light_parser.c \

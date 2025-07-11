@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 10:59:20 by aoo               #+#    #+#             */
-/*   Updated: 2025/05/12 20:41:17 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 05:40:49 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	is_quote(char *q_chars, char c, int *in_quote)
 	return (*in_quote);
 }
 
-char	*ft_strtokr_c(char *str, const char *delim, \
-		char *q_chars, char **saveptr)
+char	*ft_strtokr_c(char *str, const char *delim, char *q_chars,
+		char **saveptr)
 {
 	int		in_quote;
 	char	*start;
@@ -35,8 +35,8 @@ char	*ft_strtokr_c(char *str, const char *delim, \
 	in_quote = 0;
 	if (!str)
 		str = *saveptr;
-	while (*str && ft_strchr(delim, *str) && \
-		!is_quote(q_chars, *str, &in_quote))
+	while (*str && ft_strchr(delim, *str) && !is_quote(q_chars, *str,
+			&in_quote))
 		str++;
 	if (!*str)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:05:21 by aoo               #+#    #+#             */
-/*   Updated: 2025/05/21 03:06:24 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 05:42:01 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	find_value(char c, char *base)
 	}
 	return (-1);
 }
+
 int	check_power(char *base)
 {
 	int	power;
@@ -42,9 +43,9 @@ int	check_power(char *base)
 			if (base[ptr] == base[power])
 				return (0);
 		}
-		if (base[power] == '+' || base[power] == '-' || base[power] == '*' || \
-			base[power] == '/' || base[power] == '%' || base[power] == 127 || \
-			base[power] < 33)
+		if (base[power] == '+' || base[power] == '-' || base[power] == '*'
+			|| base[power] == '/' || base[power] == '%' || base[power] == 127
+			|| base[power] < 33)
 			return (0);
 		power++;
 	}

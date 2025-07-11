@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atof_vali.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:52:09 by taung             #+#    #+#             */
-/*   Updated: 2025/07/09 06:33:07 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/12 05:39:09 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,3 @@ int	ft_atof_vali(const char *str, double *result)
 		*result = -*result;
 	return (1);
 }
-

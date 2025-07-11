@@ -1,96 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/12 05:31:13 by aoo               #+#    #+#             */
+/*   Updated: 2025/07/12 05:38:22 by aoo              ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
-// Function to convert color to MLX format
-static int	color_to_mlx(t_color color)
+void	free_data(t_data *data)
 {
-	return ((color.r << 16) | (color.g << 8) | color.b);
-}
-
-static void	render_to_mlx_image(t_scene *scene, t_data *data)
-{
-	t_camera_view	view;
-	t_ray			ray;
-	t_vec3			pixel;
-	int				xy[2];
-
-	ray = init_ray(scene->camera.p, vec3_create(0, 0, 0), 1.0, DBL_MAX);
-	view = setup_camera(scene->camera, scene);
-	xy[1] = 0;
-	while (xy[1] < scene->height)
+	if (data->mlx_win)
+		mlx_destroy_window(data->mlx, data->mlx_win);
+	if (data->mlx)
 	{
-		xy[0] = 0;
-		while (xy[0] < scene->width)
-		{
-			pixel = vec3_add(view.pixel00,
-					vec3_add(vec3_scale(view.pixel_delta_u, xy[0]),
-						vec3_scale(view.pixel_delta_v, scene->height - 1
-							- xy[1])));
-			ray.dir = vec3_normalize(vec3_sub(pixel, scene->camera.p));
-			mlx_pixel_put(data->mlx, data->mlx_win, xy[0], xy[1],
-				color_to_mlx(trace_ray(ray, scene)));
-			xy[0]++;
-		}
-		xy[1]++;
-	}
-}
-
-static int	close_hook(t_data *data)
-{
-	if (data->mlx && data->mlx_win)
-	{	mlx_destroy_window(data->mlx, data->mlx_win);
-		// mlx_destroy_display(data->mlx);
+		mlx_destroy_display(data->mlx);
 		free(data->mlx);
-		free_scene(data->scene);
-		exit(0);
 	}
-	return (0);
-}
-
-static int	key_hook(int keycode, void *param)
-{
-	t_data	*data;
-
-	data = (t_data *)param;
-	if (keycode == 65307)
-		close_hook(data);
-	return (0);
+	if (data->scene)
+		free_scene(data->scene);
+	ft_bzero(data, sizeof(t_data));
 }
 
 int	main(int argc, char **argv)
 {
 	t_data	data;
 
+	if (argc != 2)
+		return (print_error("Too many arguments\n"));
 	ft_bzero(&data, sizeof(t_data));
-	data.scene = create_scene();
-	if (!data.scene)
-		return(print_error("Error: Failed to create scene\n"));
+	if (!create_scene(argv[1], &data))
+		return (free_data(&data),
+			!print_error("Error: Failed to create scene\n"));
 	data.mlx = mlx_init();
 	if (!data.mlx)
-		return (print_error("Error: Failed to initialize MLX\n"));  // need scence_free
-	if (!parser(argv[1], &data))
-	{
-		free_scene(data.scene);
-		// mlx_destroy_display(data.mlx);
-		free(data.mlx);
-		return (print_error("Error: Failed to parse input file\n"));
-	}
-	print_data(data);
-	data.mlx_win = mlx_new_window(data.mlx, data.scene->width, data.scene->height,
-			"Ray Tracer");
+		return (free_data(&data),
+			!print_error("Error: Failed to initialize MLX\n"));
+	data.mlx_win = mlx_new_window(data.mlx, WIDTH, HEIGHT, "Ray Tracer");
 	if (!data.mlx_win)
-	{
-		free_scene(data.scene);
-		// mlx_destroy_display(data.mlx);
-		free(data.mlx);
-		return (print_error("Error: Failed to create window\n"));
-	}
+		return (free_data(&data),
+			!print_error("Error: Failed to create window\n"));
 	printf("Rendering scene to window...\n");
 	render_to_mlx_image(data.scene, &data);
 	printf("Rendering complete! Press ESC to exit.\n");
 	mlx_key_hook(data.mlx_win, key_hook, &data);
 	mlx_hook(data.mlx_win, 17, 0, close_hook, &data);
 	mlx_loop(data.mlx);
-	free_scene(data.scene);
-
 	return (0);
 }
