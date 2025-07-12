@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 05:31:13 by aoo               #+#    #+#             */
-/*   Updated: 2025/07/12 05:50:42 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/12 20:07:38 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+int	check_light_positions(t_scene *scene);
 
 void	free_data(t_data *data)
 {
@@ -36,6 +38,8 @@ int	main(int argc, char **argv)
 	if (!create_scene(argv[1], &data))
 		return (free_data(&data),
 			!print_error("Error: Failed to create scene\n"));
+	if (!check_light_positions(data.scene))
+		return (free_data(&data), 1);
 	data.mlx = mlx_init();
 	if (!data.mlx)
 		return (free_data(&data),
