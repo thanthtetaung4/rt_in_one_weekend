@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 05:35:13 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/14 02:54:12 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
 
-# include "libft.h"
 # include "gnl.h"
+# include "libft.h"
 # include "vec3.h"
 # include <float.h>
 # include <math.h>
@@ -221,6 +221,8 @@ t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
 t_color				trace_ray(t_ray ray, t_scene *scene);
 
 // Lighting functions
+int					check_light_positions(const t_scene *scene,
+						t_point_light light);
 t_color				calculate_lighting(t_hit hit, t_vec3 view_direction,
 						t_scene *scene);
 t_color				color_multiply(t_color a, t_color b);
@@ -232,6 +234,7 @@ int					is_in_shadow(t_vec3 hit_point, t_vec3 light_direction,
 
 // Camera functions
 t_camera_view		setup_camera(t_camera camera, t_scene *scene);
+int					check_c_pos(const t_scene *scene, t_camera camera);
 
 // Render functions
 void				render_scene(FILE *f, t_scene *scene);

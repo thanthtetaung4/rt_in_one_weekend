@@ -6,11 +6,11 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:48:24 by taung             #+#    #+#             */
-/*   Updated: 2025/07/11 14:17:36 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 03:01:26 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/rt.h"
+#include "rt.h"
 
 static void	calculate_ambient_lighting(t_color *final_color,
 		t_material material, t_scene *scene)
@@ -66,27 +66,30 @@ static void	calculate_specular_lighting(t_color *final_color, t_hit hit,
 static void	calculate_point_lighting(t_color *final_color, t_hit hit,
 		t_vec3 view_direction, t_scene *scene)
 {
-	int				i;
-	t_point_light	light;
-	t_vec3			light_direction;
-	double			light_distance;
-	t_vec3			arr[2];
+	int		i;
+	t_vec3	light_direction;
+	double	light_distance;
+	t_vec3	arr[2];
 
-	i = 0;
-	while (i < scene->num_lights)
+	i = -1;
+	while (++i < scene->num_lights)
 	{
-		light = scene->lights[i];
-		light_direction = vec3_sub(light.position, hit.point);
-		light_distance = sqrt(vec3_dot(light_direction, light_direction));
-		light_direction = vec3_normalize(light_direction);
-		if (!is_in_shadow(hit.point, light_direction, light_distance, scene))
+		if (~(check_light_positions(scene,
+					scene->lights[i]) ^ check_c_pos(scene, scene->camera)) & 1)
 		{
-			calculate_diffuse_lighting(final_color, hit, light);
-			arr[0] = light_direction;
-			arr[1] = view_direction;
-			calculate_specular_lighting(final_color, hit, arr, light);
+			light_direction = vec3_sub(scene->lights[i].position, hit.point);
+			light_distance = sqrt(vec3_dot(light_direction, light_direction));
+			light_direction = vec3_normalize(light_direction);
+			if (!is_in_shadow(hit.point, light_direction, light_distance,
+					scene))
+			{
+				calculate_diffuse_lighting(final_color, hit, scene->lights[i]);
+				arr[0] = light_direction;
+				arr[1] = view_direction;
+				calculate_specular_lighting(final_color, hit, arr,
+					scene->lights[i]);
+			}
 		}
-		i++;
 	}
 }
 

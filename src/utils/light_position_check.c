@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 20:09:45 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 20:17:34 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 02:16:26 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,27 +42,21 @@ int	is_light_on_plane(t_point_light light, t_plane plane)
 	return (fabs(vec3_dot(to_light, plane.normal)) < 1e-6);
 }
 
-int	check_light_positions(t_scene *scene)
+int	check_light_positions(const t_scene *scene, t_point_light light)
 {
-	int	i;
 	int	j;
 
-	i = 0;
-	while (i < scene->num_lights)
-	{
-		j = 0;
-		while (j < scene->num_spheres)
-			if (is_light_in_sphere(scene->lights[i], scene->spheres[j++]))
-				return (print_error("Error: Light inside sphere!\n"), 0);
-		j = 0;
-		while (j < scene->num_cylinders)
-			if (is_light_in_cylinder(scene->lights[i], scene->cylinders[j++]))
-				return (print_error("Error: Light inside cylinder!\n"), 0);
-		j = 0;
-		while (j < scene->num_planes)
-			if (is_light_on_plane(scene->lights[i], scene->planes[j++]))
-				return (print_error("Error: Light on plane!\n"), 0);
-		i++;
-	}
+	j = 0;
+	while (j < scene->num_spheres)
+		if (is_light_in_sphere(light, scene->spheres[j++]))
+			return (0);
+	j = 0;
+	while (j < scene->num_cylinders)
+		if (is_light_in_cylinder(light, scene->cylinders[j++]))
+			return (0);
+	j = 0;
+	while (j < scene->num_planes)
+		if (is_light_on_plane(light, scene->planes[j++]))
+			return (0);
 	return (1);
 }
