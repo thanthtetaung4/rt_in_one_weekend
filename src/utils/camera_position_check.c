@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:49:40 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 03:05:26 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 03:40:19 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,14 @@ static int	is_camera_in_cylinder(const t_scene *scene, t_camera camera)
 	return (0);
 }
 
-int	check_c_pos(const t_scene *scene, t_camera camera)
+int	check_c_pos(const t_scene *scene, t_camera camera, t_point_light light)
 {
+	int	i;
+
+	i = 0;
+	while (i < scene->num_planes)
+		if (is_light_on_plane(light, scene->planes[i++]))
+			return (1);
 	if (is_camera_in_sphere(scene, camera))
 		return (0);
 	if (is_camera_in_cylinder(scene, camera))

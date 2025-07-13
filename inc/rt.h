@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 02:54:12 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 03:39:16 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,10 +231,11 @@ t_color				color_add(t_color a, t_color b);
 t_color				color_clamp(t_color color);
 int					is_in_shadow(t_vec3 hit_point, t_vec3 light_direction,
 						double light_distance, t_scene *scene);
+int					is_light_on_plane(t_point_light light, t_plane plane);
 
 // Camera functions
 t_camera_view		setup_camera(t_camera camera, t_scene *scene);
-int					check_c_pos(const t_scene *scene, t_camera camera);
+int					check_c_pos(const t_scene *scene, t_camera camera, t_point_light light);
 
 // Render functions
 void				render_scene(FILE *f, t_scene *scene);
