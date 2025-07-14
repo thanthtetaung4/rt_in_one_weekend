@@ -6,13 +6,13 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 05:20:59 by aoo               #+#    #+#             */
-/*   Updated: 2025/07/12 05:21:00 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/14 13:53:03 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_hit	get_plane_hit(t_ray ray, t_plane plane, double t)
+static t_hit	get_plane_hit(t_ray ray, t_plane plane, double t)
 {
 	t_hit	hit;
 

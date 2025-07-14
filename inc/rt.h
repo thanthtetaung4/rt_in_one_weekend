@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 03:39:16 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 13:56:00 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,18 +203,15 @@ t_ray				init_ray(t_vec3 origin, t_vec3 dir, double t_min,
 						double t_max);
 void				intersect_sphere(t_ray ray, t_sphere sphere, double *t1,
 						double *t2);
-t_hit				get_sphere_hit(t_ray ray, t_sphere sphere, double t);
 t_hit				hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
 						t_hit closest_hit);
 
 void				intersect_cylinder(t_ray ray, t_cylinder cylinder,
 						double *t1, double *t2);
-t_hit				get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t);
 t_hit				hit_cylinders(t_ray ray, int num_cylinders,
 						t_cylinder *cylinders, t_hit closest_hit);
 
 void				intersect_plane(t_ray ray, t_plane plane, double *t);
-t_hit				get_plane_hit(t_ray ray, t_plane plane, double t);
 t_hit				hit_planes(t_ray ray, int num_planes, t_plane *planes,
 						t_hit closest_hit);
 
