@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:31:33 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:37:15 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 14:59:41 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,14 @@ int	world_parser(char *res, t_data *data)
 	if (ft_strcmp(split[0], "A") == 0)
 	{
 		if (!parse_ambient(res, &data->scene->ambient))
-			return (free_strs(split), print_error("Error: Invalid ambient!\n"));
+		return (free_strs(split), print_error("Error: Invalid ambient!\n"));
 	}
-	else if (ft_strcmp(split[0], "c") == 0)
+	else if (ft_strcmp(split[0], "C") == 0)
 	{
 		if (!parse_camera(res, &data->scene->camera))
 			return (free_strs(split), print_error("Error: Invalid camera!\n"));
 	}
-	else if (ft_strcmp(split[0], "l") == 0)
+	else if (ft_strcmp(split[0], "L") == 0)
 	{
 		if (!parse_light(res, data))
 			return (free_strs(split), print_error("Error: Invalid light!\n"));
@@ -127,6 +127,7 @@ int	parser(char *filename, t_data *data)
 		if (*res != '\n' && (!world_parser(res, data) || !object_parser(res,
 					data)))
 		{
+			print_error("res\n");
 			free(res);
 			return (close(fd) || 0);
 		}

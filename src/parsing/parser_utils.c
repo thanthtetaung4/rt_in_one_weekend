@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:37:25 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:35:06 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 15:00:43 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	count_onl(char *filename, t_data *data)
 	line = gnl(fd);
 	while (line)
 	{
-		if (line[0] == 'l')
+		if (line[0] == 'L')
 			data->scene->num_lights++;
 		if (line[0] == 'p' && line[1] && line[1] == 'l')
 			data->scene->num_planes++;
