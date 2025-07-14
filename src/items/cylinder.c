@@ -6,13 +6,13 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 05:23:20 by aoo               #+#    #+#             */
-/*   Updated: 2025/07/12 05:27:37 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/14 13:55:50 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t)
+static t_hit	get_cylinder_hit(t_ray ray, t_cylinder cylinder, double t)
 {
 	t_gch_calc	data;
 

@@ -6,11 +6,23 @@
 /*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 05:21:03 by aoo               #+#    #+#             */
-/*   Updated: 2025/07/12 05:50:08 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/14 13:53:41 by aoo              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+static t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t)
+{
+	t_hit	hit;
+
+	hit.t = t;
+	hit.point = vec3_add(ray.origin, vec3_scale(ray.dir, t));
+	hit.normal = vec3_normalize(vec3_sub(hit.point, sphere.center));
+	hit.material = sphere.material;
+	hit.hit = 1;
+	return (hit);
+}
 
 void	intersect_sphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 {
@@ -31,18 +43,6 @@ void	intersect_sphere(t_ray ray, t_sphere sphere, double *t1, double *t2)
 	sqrt_discriminant = sqrt(q.discriminant);
 	*t1 = (-q.b + sqrt_discriminant) / (2 * q.a);
 	*t2 = (-q.b - sqrt_discriminant) / (2 * q.a);
-}
-
-t_hit	get_sphere_hit(t_ray ray, t_sphere sphere, double t)
-{
-	t_hit	hit;
-
-	hit.t = t;
-	hit.point = vec3_add(ray.origin, vec3_scale(ray.dir, t));
-	hit.normal = vec3_normalize(vec3_sub(hit.point, sphere.center));
-	hit.material = sphere.material;
-	hit.hit = 1;
-	return (hit);
 }
 
 t_hit	hit_spheres(t_ray ray, int num_spheres, t_sphere *spheres,
