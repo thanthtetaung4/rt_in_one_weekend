@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 03:32:03 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 13:56:00 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/15 14:00:17 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,8 @@ int					is_light_on_plane(t_point_light light, t_plane plane);
 
 // Camera functions
 t_camera_view		setup_camera(t_camera camera, t_scene *scene);
-int					check_c_pos(const t_scene *scene, t_camera camera, t_point_light light);
+int					check_c_pos(const t_scene *scene, t_camera camera,
+						t_point_light light);
 
 // Render functions
 void				render_scene(FILE *f, t_scene *scene);
@@ -277,6 +278,7 @@ int					parse_material_i(const char *spc, const char *mir,
 int					parser(char *filename, t_data *data);
 void				count_onl(char *filename, t_data *data);
 int					check_range(float value, float min, float max);
+int					check_dir(t_vec3 d, float min, float max);
 int					parse_ratio(char *line, t_scene *scene);
 void				init_mat(t_material *mat);
 int					alloc_sp(t_data *data);
@@ -284,6 +286,7 @@ int					alloc_l(t_data *data);
 int					alloc_cy(t_data *data);
 int					alloc_pl(t_data *data);
 int					init_scene(char *filename, t_data *data);
+int					check_objs(char *filename);
 
 // Free
 void				free_data(t_data *data);

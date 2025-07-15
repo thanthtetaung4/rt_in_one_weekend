@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cylinder_parser.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoo <aoo@student.42singapore.sg>           +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 23:24:16 by taung             #+#    #+#             */
-/*   Updated: 2025/07/12 04:17:37 by aoo              ###   ########.fr       */
+/*   Updated: 2025/07/15 15:18:00 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	parse_cylinder(char *line, t_data *data)
 		return (0);
 	if (!(ft_strslen(split) >= 6 && ft_strslen(split) <= 8)
 		|| !parse_xyz(split[1], &cylinder.center, 0) || !parse_xyz(split[2],
-			&cylinder.axis, 0) || !ft_atof_vali(split[3], &cylinder.radius)
+			&cylinder.axis, 1) || !ft_atof_vali(split[3], &cylinder.radius)
 		|| cylinder.radius <= 0 || !ft_atof_vali(split[4],
 			&cylinder.half_height) || cylinder.half_height <= 0
 		|| !parse_rgb(split[5], &cylinder.material.color))

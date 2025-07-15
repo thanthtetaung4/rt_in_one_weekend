@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   material_parser.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:34:58 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:35:00 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/15 15:54:27 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,18 @@ void	init_mat(t_material *mat)
 	mat->shininess = 20;
 }
 
+static int	check_mat_properties(double diff, double spec, double amb,
+		double shine)
+{
+	if (!check_range(diff, 0.0, 1.0) || !check_range(spec, 0.0, 1.0)
+		|| !check_range(amb, 0.0, 1.0) || !check_range(shine, 0, 100))
+		return (0);
+	return (1);
+}
+
 int	parse_material_i(const char *spc, const char *mir, t_material *mat)
 {
 	char	**tmp;
-	char	**tmp2;
-	int		len;
 
 	init_mat(mat);
 	tmp = ft_split(spc, ":,");
@@ -45,5 +52,8 @@ int	parse_material_i(const char *spc, const char *mir, t_material *mat)
 		free_strs(tmp);
 		tmp = NULL;
 	}
+	if (!check_mat_properties(mat->diffuse, mat->specular, mat->ambient,
+			mat->shininess))
+		return (print_error("Error:: Invalid material property\n"));
 	return (1);
 }

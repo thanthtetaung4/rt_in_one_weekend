@@ -43,9 +43,6 @@ void	render_to_mlx_image(t_scene *scene, t_data *data)
 t_hit	trace_ray_hit(t_ray ray, t_scene *scene)
 {
 	t_hit	closest_hit;
-	int		i;
-	double	t1;
-	double	t2;
 
 	ft_bzero(&closest_hit, sizeof(t_hit));
 	closest_hit.t = DBL_MAX;

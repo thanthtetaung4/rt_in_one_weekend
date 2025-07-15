@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:31:33 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 14:59:41 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/15 15:22:49 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,16 @@ int	parse_xyz(char *str, t_vec3 *vec3, int vector)
 	if (!ft_atof_vali(xyz[0], &vec3->x) || !ft_atof_vali(xyz[1], &vec3->y)
 		|| !ft_atof_vali(xyz[2], &vec3->z))
 	{
-		if (vector)
-		{
-			if (!check_range(vec3->x, -1, 1) || !check_range(vec3->y, -1, 1)
-				|| !check_range(vec3->z, -1, 1))
-			{
-				free_strs(xyz);
-				return (0);
-			}
-			return (free_strs(xyz), 0);
-		}
 		free_strs(xyz);
 		return (0);
 	}
+	if (vector)
+		if (!check_range(vec3->x, -1, 1) || !check_range(vec3->y, -1, 1)
+			|| !check_range(vec3->z, -1, 1))
+		{
+			free_strs(xyz);
+			return (0);
+		}
 	free_strs(xyz);
 	return (1);
 }
@@ -65,7 +62,7 @@ int	world_parser(char *res, t_data *data)
 	if (ft_strcmp(split[0], "A") == 0)
 	{
 		if (!parse_ambient(res, &data->scene->ambient))
-		return (free_strs(split), print_error("Error: Invalid ambient!\n"));
+			return (free_strs(split), print_error("Error: Invalid ambient!\n"));
 	}
 	else if (ft_strcmp(split[0], "C") == 0)
 	{
@@ -117,7 +114,8 @@ int	parser(char *filename, t_data *data)
 	int		i;
 
 	i = 0;
-	init_scene(filename, data);
+	if (!init_scene(filename, data))
+		return (print_error("Error: invalid .rt format\n"));
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (print_error("Error: Invalid path!\n"));
@@ -127,7 +125,6 @@ int	parser(char *filename, t_data *data)
 		if (*res != '\n' && (!world_parser(res, data) || !object_parser(res,
 					data)))
 		{
-			print_error("res\n");
 			free(res);
 			return (close(fd) || 0);
 		}

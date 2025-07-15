@@ -6,7 +6,7 @@
 /*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:37:25 by taung             #+#    #+#             */
-/*   Updated: 2025/07/14 15:00:43 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:00:32 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,17 @@ int	count_row(const char *path)
 	close(fd);
 	free(res);
 	return (i);
+}
+
+int	check_dir(t_vec3 d, float min, float max)
+{
+	if (d.x < min || d.x > max)
+		return (0);
+	if (d.y < min || d.y > max)
+		return (0);
+	if (d.z < min || d.z > max)
+		return (0);
+	return (1);
 }
 
 int	check_range(float value, float min, float max)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_scene.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taung <taung@student.42singapore.fr>       +#+  +:+       +#+        */
+/*   By: taung <taung@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:36:57 by taung             #+#    #+#             */
-/*   Updated: 2025/07/10 17:38:03 by taung            ###   ########.fr       */
+/*   Updated: 2025/07/14 19:34:52 by taung            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,22 @@ int	alloc_pl(t_data *data)
 
 int	init_scene(char *filename, t_data *data)
 {
-	count_onl(filename, data);
-	if (data->scene->num_lights > 0)
-		if (!alloc_l(data))
-			return (0);
-	if (data->scene->num_spheres > 0)
-		if (!alloc_sp(data))
-			return (0);
-	if (data->scene->num_planes > 0)
-		if (!alloc_pl(data))
-			return (0);
-	if (data->scene->num_cylinders > 0)
-		if (!alloc_cy(data))
-			return (0);
-	return (1);
+	if (check_objs(filename))
+	{
+		count_onl(filename, data);
+		if (data->scene->num_lights > 0)
+			if (!alloc_l(data))
+				return (0);
+		if (data->scene->num_spheres > 0)
+			if (!alloc_sp(data))
+				return (0);
+		if (data->scene->num_planes > 0)
+			if (!alloc_pl(data))
+				return (0);
+		if (data->scene->num_cylinders > 0)
+			if (!alloc_cy(data))
+				return (0);
+		return (1);
+	}
+	return (0);
 }

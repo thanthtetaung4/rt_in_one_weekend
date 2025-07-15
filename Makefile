@@ -19,7 +19,6 @@ endif
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
-CFLAGS = #-Wall -Wextra -Werror
 INCLUDE = -I$(MLX_PATH) -I$(LIBFT_PATH) -Iinc -Isrc/gnl -Isrc/vec3
 # Source and object files
 DEFAULT = ./src
@@ -40,14 +39,15 @@ SRCS = $(GNL) $(DEFAULT)/main.c $(DEFAULT)/ray.c \
 		$(PARSING)/camera_parser.c $(PARSING)/sphere_parser.c $(PARSING)/cylinder_parser.c \
 		$(PARSING)/plane_parser.c $(UTILS)/print_obj.c $(UTILS)/print_world.c $(UTILS)/print_misc.c \
 		$(PARSING)/ratio_parser.c $(PARSING)/init_scene.c $(UTILS)/shadow_utils.c \
-		$(UTILS)/light_position_check.c $(UTILS)/camera_position_check.c
+		$(UTILS)/light_position_check.c $(UTILS)/camera_position_check.c $(PARSING)/check_rt.c
 OBJS = $(SRCS:.c=.o)
 
 # Compiler
 CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
 # Executable names
-NAME = rt
+NAME = miniRT
 
 # Rules
 all: $(NAME)

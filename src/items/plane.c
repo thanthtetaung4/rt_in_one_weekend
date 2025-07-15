@@ -46,7 +46,6 @@ t_hit	hit_planes(t_ray ray, int num_planes, t_plane *planes,
 {
 	int		i;
 	double	t1;
-	double	t2;
 
 	i = 0;
 	while (i < num_planes)
